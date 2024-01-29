@@ -29,13 +29,11 @@ class HomeScreen extends StatelessWidget {
             bottomNavigationBar: BottomNavigationBar(
               showSelectedLabels: false,
               showUnselectedLabels: false,
-              backgroundColor: homeBackGroundColor,
-              currentIndex: controller.bottomSelectedIndex,
+               currentIndex: controller.bottomSelectedIndex,
               onTap: (index) {
                 controller.bottomTapped(index);
               },
-              unselectedItemColor: darkGrey,
-              selectedItemColor: mainColor2,
+
               items: [
                 buildBottomNavigationBarItem(IconBroken.Home),
                 buildBottomNavigationBarItem(IconBroken.Search),
@@ -49,7 +47,7 @@ class HomeScreen extends StatelessWidget {
 
   BottomNavigationBarItem buildBottomNavigationBarItem(IconData iconData) {
     return BottomNavigationBarItem(
-      backgroundColor: homeBackGroundColor,
+  //    backgroundColor: homeBackGroundColor,
       label: "",
       icon: Icon(
         iconData,

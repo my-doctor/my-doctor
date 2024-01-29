@@ -57,7 +57,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white54,
+      backgroundColor: Colors.white,
       body: GestureDetector(
         onTap: () {},
         child: SizedBox(

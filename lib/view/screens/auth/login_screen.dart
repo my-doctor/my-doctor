@@ -115,8 +115,9 @@ class LoginScreen extends StatelessWidget {
                               onPressed: () {
                                 Get.to(
                                   () => PinCodeVerificationScreen(
-                                    phoneNumber: "+201126754631",
+                                    phoneNumber: "+0011001",
                                   ),
+                                  transition: Transition.rightToLeft,
                                   duration: Duration(milliseconds: 1000),
                                 );
                               },

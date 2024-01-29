@@ -18,26 +18,21 @@ class DoctorCard extends StatelessWidget {
     required this.name,
     required this.description,
     required this.imageUrl,
-    //required this.uid,
-   // required this.doctorInfo,
+
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: SizeConfig.screenWidth,
-      child: Card(
+      child: Card(color: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 4,
         child: Row(
           children: [
             InkWell( onTap: () {
               Get.to(()=>DoctorsDetailsScreen());
-              // Get.toNamed(Routes.doctorProfileViewForPatient,
-              //     arguments: [
-              //
-              //      // uid,
-              //       imageUrl, name, description,doctorInfo]);
+
             },
               child: ClipRRect(
                 child: Card(elevation:

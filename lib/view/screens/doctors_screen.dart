@@ -15,22 +15,16 @@ class DoctorsBySpecialtiesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              Get.back();
-            },
-            child: Icon(IconBroken.Arrow___Left_2)),
-        backgroundColor: homeBackGroundColor,
+        iconTheme: Theme.of(context).iconTheme,
         shadowColor: Colors.black,
         elevation: 2,
         title: Text(
           specialties ?? "",
-          style: TextStyle(fontWeight: FontWeight.w800, fontFamily: "Cairo"),
-        ),
+         ),
         centerTitle: true,
       ),
       body: Center(
-        child:    Padding(
+        child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView.builder(
               padding: EdgeInsets.zero,
@@ -42,10 +36,11 @@ class DoctorsBySpecialtiesScreen extends StatelessWidget {
               //     childAspectRatio: 1, maxCrossAxisExtent: 200),
               itemBuilder: (context, index) {
                 return DoctorCard(
-                  imageUrl:imageUrl,
+                  imageUrl: imageUrl,
                   name: "Walter White",
-                  description: "The primary content of the scaffold.Displayed below the appBar, above the bottom of the ambient MediaQuery's MediaQueryData.viewInsets, and behind the floatingActionButton and drawer. If resizeToAvoidBottomInset is false then the body is not resized when the onscreen keyboard appears, i.e. it is not inset by viewInsets.bottom.",
-                 );
+                  description:
+                      "The primary content of the scaffold.Displayed below the appBar, above the bottom of the ambient MediaQuery's MediaQueryData.viewInsets, and behind the floatingActionButton and drawer. If resizeToAvoidBottomInset is false then the body is not resized when the onscreen keyboard appears, i.e. it is not inset by viewInsets.bottom.",
+                );
               }),
         ),
       ),

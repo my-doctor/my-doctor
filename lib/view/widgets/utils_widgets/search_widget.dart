@@ -41,7 +41,7 @@ class SearchWidget extends StatelessWidget {
                 prefixIcon: IconButton(
                   icon: Icon(
                     Icons.search,
-                    color: Colors.black87,
+                    color: Theme.of(context).textTheme.headline3!.color,
                   ),
                   onPressed: () {
                     // if (
@@ -50,10 +50,8 @@ class SearchWidget extends StatelessWidget {
                     // }
                   },
                 ),
-                hintText: "Enter doctor name..",
-                hintStyle: TextStyle(
-                  fontSize: 15,
-                ),
+                hintText: "Enter doctor name..".tr,
+                hintStyle: Theme.of(context).textTheme.headline3,
                 border: InputBorder.none),
           )),
     );

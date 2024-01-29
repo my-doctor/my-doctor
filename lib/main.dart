@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
  import 'package:flutter/services.dart';
 import 'package:mydoctor/routes/routes.dart';
+import 'package:mydoctor/utils/constants.dart';
 import 'package:mydoctor/utils/my_string.dart';
+
+import 'controller/controllers/theme_controller.dart';
+import 'language/localiztion.dart';
 
 
 
@@ -11,7 +15,7 @@ void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
 
   // await Firebase.initializeApp();
-  // await GetStorage.init();
+  await GetStorage.init();
 
 
 
@@ -28,20 +32,18 @@ class MyApp extends StatelessWidget {
     ]);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      locale: Locale(GetStorage().read<String>('lang').toString()),
+      translations: LocaliztionApp(),
+      fallbackLocale: Locale(ene),
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemesApp.light,
+      darkTheme: ThemesApp.dark,
+      themeMode: ThemeController().themeDataGet,
       initialRoute:
-      // GetStorage().read("auth") == patientsCollectionKey
-      //     ? Routes.patientMainScreen
-      //     : GetStorage().read("auth") == doctorsCollectionKey
-      //         ? Routes.doctorMainScreen
-      //         :
-      Routes.SplashScreen,
+
+      Routes.loginScreen,
       getPages: AppRoutes.routes,
 
-      //Fraon
-    );
+     );
   }
 }

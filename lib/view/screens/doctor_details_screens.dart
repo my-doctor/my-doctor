@@ -8,7 +8,6 @@ import '../../utils/styles.dart';
 
 import '../widgets/home_widgets/circule_image_avatar.dart';
 import '../widgets/utils_widgets/height_size_box.dart';
-import '../widgets/utils_widgets/text_utils.dart';
 
 class DoctorsDetailsScreen extends StatelessWidget {
   DoctorsDetailsScreen({super.key});
@@ -16,8 +15,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: homeBackGroundColor,
-      body: SafeArea(
+       body: SafeArea(
         child: DefaultTabController(
           length: 1,
           child: NestedScrollView(
@@ -29,7 +27,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 1),
                     child: Container(
-                      decoration: buildBoxDecoration(),
+                      decoration: buildBoxDecoration(context),
                       child: Column(
                         children: [
                           HeightSizeBox(Get.width * .03),
@@ -49,7 +47,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
                                       },
                                       icon: Icon(
                                         IconBroken.Arrow___Left_2,
-                                        color: black,
+                                        color: Theme.of(context).textTheme.headline3!.color,
                                         size: Get.width * .089,
                                       )),
                                 ],
@@ -74,21 +72,14 @@ class DoctorsDetailsScreen extends StatelessWidget {
                             ],
                           ),
                           HeightSizeBox(Get.width * .01),
-                          KTextUtils(
-                              text: "Dr." + "Walter White",
-                              size: 21,
-                              color: black,
-                              fontWeight: FontWeight.w800,
-                              textDecoration: TextDecoration.none),
+
+                          Text("Dr." + "Walter White",style: Theme.of(context).textTheme.headline2,),
                           HeightSizeBox(Get.width * .01),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               "The textDirection argument defaults to the ambient Directionality, if any. If there is no ambient directionality, and a text direction is going to be necessary to disambiguate start or end values for the crossAxisAlignment, the textDirection must not be null.",
-                              style: TextStyle(
-                                color: darkGrey.withOpacity(.7),
-                                fontWeight: FontWeight.w500,fontSize: 14
-                              ),
+                              style: Theme.of(context).textTheme.headline4,
                               textAlign: TextAlign.center,
                             ),
                           )
@@ -101,7 +92,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
             },
             body: Container(
               child: Center(
-                child: Text("Doctor Reviews"),
+                child: Text("Doctor Reviews",style: Theme.of(context).textTheme.headline4,),
               ),
             ),
           ),
@@ -115,7 +106,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: Colors.black12.withOpacity(0.5),
                 spreadRadius: 2,
                 blurRadius: 6,
                 offset: Offset(0, 3), // changes position of shadow
@@ -132,9 +123,9 @@ class DoctorsDetailsScreen extends StatelessWidget {
                     color: white,
                   ),
                 )
-              : const Center(
+              : Center(
                   child: Text(
-                    "Add review",
+                    "Add review".tr,
                     style: TextStyle(
                         fontSize: 22,
                         color: white,
@@ -147,17 +138,19 @@ class DoctorsDetailsScreen extends StatelessWidget {
     );
   }
 
-  BoxDecoration buildBoxDecoration() {
+  BoxDecoration buildBoxDecoration(@required context) {
     return BoxDecoration(
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
-          spreadRadius: 2,
-          blurRadius: 6,
-          offset: Offset(0, 3), // changes position of shadow
-        ),
+
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 6,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+
       ],
-      color: white,
+      color: Theme.of(context).canvasColor,
       borderRadius: BorderRadius.only(
         bottomLeft: Radius.circular(20),
         bottomRight: Radius.circular(20),

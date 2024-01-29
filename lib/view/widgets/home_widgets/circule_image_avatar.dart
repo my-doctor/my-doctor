@@ -9,7 +9,6 @@ class CirculeImageAvatar extends StatelessWidget {
   double width;
   Color? color;
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,14 +32,21 @@ class CirculeImageAvatar extends StatelessWidget {
             borderRadius: BorderRadius.circular(width * 2)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(width * 2),
-          child: FadeInImage.assetNetwork(fit: BoxFit.cover,
+          child: FadeInImage.assetNetwork(
+              fit: BoxFit.cover,
               placeholder: "assets/animations/63065-profile-in-out.gif",
-              image: imageUrl),
+              image: imageUrl,
+            imageErrorBuilder: (context, error, stackTrace) {
+              return Image.asset("assets/images/profile.png"); // Replace YourErrorWidget() with your error widget
+            },),
         ),
       ),
     );
   }
 
-  CirculeImageAvatar(
-      {required this.imageUrl, required this.width, this.color, });
+  CirculeImageAvatar({
+    required this.imageUrl,
+    required this.width,
+    this.color,
+  });
 }
