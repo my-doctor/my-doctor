@@ -14,7 +14,8 @@ import '../../widgets/utils_widgets/text_utils.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController phoneNumberController = TextEditingController();
-
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -60,88 +61,218 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Your login text and form elements here
                         KTextUtils(
                           text: "Login",
-                          size: 35,
+                          size: 30,
                           color: const Color(0xffffffff),
                           fontWeight: FontWeight.bold,
                           textDecoration: TextDecoration.none,
                         ),
                         const SizedBox(
-                          height: 80,
-                        ),
-                        // Country code picker
-                        CountryCodePicker(
-                          onChanged: (code) {
-                            // Handle country code change
-                          },
-                          initialSelection: 'US',
-                          // Set your initial country here
-                          textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-
-                        // Phone number text field
-                        AuthTextFromField(
-                          prefixIcon: Icon(
-                            Icons.phone_android,
-                            color: grey,
-                          ),
-                          suffixIcon: Text(""),
-                          controller: phoneNumberController,
-                          obscureText: false,
-                          validator: (value) {
-                            if (value.length == 0) {
-                              return 'Please enter mobile number';
-                            } else if (!RegExp(validationPhone)
-                                .hasMatch(value)) {
-                              return 'Please enter valid mobile number';
-                            }
-                            return null;
-                          },
-                          hintText: 'Phone number',
-                          textInputType: TextInputType.phone,
-                        ),
-                        SizedBox(
-                          height: 60,
-                        ),
-                        // Your login button here
-                        Align(
-                          alignment: Alignment.center,
-                          child: AuthButton(
-                              onPressed: () {
-                                Get.to(
-                                  () => PinCodeVerificationScreen(
-                                    phoneNumber: "+0011001",
-                                  ),
-                                  transition: Transition.rightToLeft,
-                                  duration: Duration(milliseconds: 1000),
-                                );
-                              },
-                              text: true
-                                  ? Text(
-                                      "Login",
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700),
-                                    )
-                                  : SizedBox(
-                                      width: SizeConfig.defaultSize,
-                                      height: SizeConfig.defaultSize,
-                                      child: CircularProgressIndicator(
-                                        color: mainColor,
-                                      )),
-                              width: width * .8),
-                        ),
-                        SizedBox(
                           height: 30,
                         ),
-                        // Your sign up text and button here
+                        AuthTextFromField(
+                          prefixIcon: Icon(
+                            Icons.email_outlined,
+                            color: white,
+                          ),
+                          suffixIcon: Text(""),
+                          controller: emailController,
+                          obscureText: false,
+                          validator: (value) {
+                            if (!RegExp(validationEmail).hasMatch(value)) {
+                              return "Invalid Email";
+                            } else {
+                              return null;
+                            }
+                          },
+                          hintText: 'Email',
+                          textInputType: TextInputType.text,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        AuthTextFromField(
+                          prefixIcon: Icon(
+                            Icons.lock_outline_rounded,
+                            color: white,
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                         //     controller.visibility();
+                            },
+                            icon:
+                            // controller.isVisibilty
+                            //     ? Icon(Icons.visibility_off)
+                            //     :
+                            Icon(Icons.visibility),
+                            color: mainColor3,
+                          ),
+                          controller: passwordController,
+                          obscureText:
+                         // controller.isVisibilty ? false :
+                          true,
+                          validator: (value) {
+                            if (value.toString().length < 6) {
+                              return "Password is too short";
+                            } else {
+                              return null;
+                            }
+                          },
+                          hintText: 'Password',
+                          textInputType: TextInputType.visiblePassword,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  Get.toNamed(Routes.forgotPassword);
+                                },
+                                child: KTextUtils(
+                                  text: "Forget Password",
+                                  size: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  textDecoration: TextDecoration.underline,
+                                )),
+                          ],
+                        ),   SizedBox(
+                          height: Get.height*.1
+                          ,
+                        ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: AuthButton(
+                                onPressed: () { Get.toNamed(Routes.homeScreen); },
+                                text: true
+                                    ? Text(
+                                        "Login",
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700),
+                                      )
+                                    : SizedBox(
+                                        width: SizeConfig.defaultSize,
+                                        height: SizeConfig.defaultSize,
+                                        child: CircularProgressIndicator(
+                                          color: mainColor,
+                                        )),
+                                width: width * .8),
+                          ),            const SizedBox(
+                          height: 30,
+                        ),
+                        // نص sign up
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            KTextUtils(
+                              text: "Don’t have an account?",
+                              size: 18,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              textDecoration: TextDecoration.none,
+                            ),
+                            TextButton(
+                                onPressed: () {
+Get.toNamed(Routes.patientRegisterScreen);
+                                },
+                                child: KTextUtils(
+                                  text: "SignUp",
+                                  size: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  textDecoration: TextDecoration.underline,
+                                ))
+                          ],
+                        ),
+
+                        //     hei
                       ],
+                      // children: [
+                      //   // Your login text and form elements here
+                      //   KTextUtils(
+                      //     text: "Login",
+                      //     size: 35,
+                      //     color: const Color(0xffffffff),
+                      //     fontWeight: FontWeight.bold,
+                      //     textDecoration: TextDecoration.none,
+                      //   ),
+                      //   const SizedBox(
+                      //     height: 80,
+                      //   ),
+                      //   // Country code picker
+                      //   CountryCodePicker(
+                      //     onChanged: (code) {
+                      //       // Handle country code change
+                      //     },
+                      //     initialSelection: 'US',
+                      //     // Set your initial country here
+                      //     textStyle: TextStyle(
+                      //       color: Colors.white,
+                      //       fontSize: 18,
+                      //     ),
+                      //   ),
+                      //
+                      //   // Phone number text field
+                      //   AuthTextFromField(
+                      //     prefixIcon: Icon(
+                      //       Icons.phone_android,
+                      //       color: grey,
+                      //     ),
+                      //     suffixIcon: Text(""),
+                      //     controller: phoneNumberController,
+                      //     obscureText: false,
+                      //     validator: (value) {
+                      //       if (value.length == 0) {
+                      //         return 'Please enter mobile number';
+                      //       } else if (!RegExp(validationPhone)
+                      //           .hasMatch(value)) {
+                      //         return 'Please enter valid mobile number';
+                      //       }
+                      //       return null;
+                      //     },
+                      //     hintText: 'Phone number',
+                      //     textInputType: TextInputType.phone,
+                      //   ),
+                      //   SizedBox(
+                      //     height: 60,
+                      //   ),
+                      //   // Your login button here
+                      //   Align(
+                      //     alignment: Alignment.center,
+                      //     child: AuthButton(
+                      //         onPressed: () {
+                      //           Get.to(
+                      //             () => PinCodeVerificationScreen(
+                      //               phoneNumber: "+0011001",
+                      //             ),
+                      //             transition: Transition.rightToLeft,
+                      //             duration: Duration(milliseconds: 1000),
+                      //           );
+                      //         },
+                      //         text: true
+                      //             ? Text(
+                      //                 "Login",
+                      //                 style: TextStyle(
+                      //                     fontSize: 22,
+                      //                     color: Colors.black,
+                      //                     fontWeight: FontWeight.w700),
+                      //               )
+                      //             : SizedBox(
+                      //                 width: SizeConfig.defaultSize,
+                      //                 height: SizeConfig.defaultSize,
+                      //                 child: CircularProgressIndicator(
+                      //                   color: mainColor,
+                      //                 )),
+                      //         width: width * .8),
+                      //   ),
+                      //   SizedBox(
+                      //     height: 30,
+                      //   ),
+                      //   // Your sign up text and button here
+                      // ],
                     ),
                   ),
                 ),

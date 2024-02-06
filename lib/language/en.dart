@@ -13,5 +13,6 @@ const Map<String, String> en = {
   "Enter doctor name..": "Enter doctor name..",
   "Arabic 🇸🇦": "Arabic 🇸🇦",
   "English 🇬🇧":"English 🇬🇧",
-  "Add review":"Add review"
+  "Add review":"Add review",
+  "fill information":"fill information",
 };

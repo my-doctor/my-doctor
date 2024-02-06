@@ -1,97 +1,58 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:mydoctor/model/blogs_model.dart';
-// import 'package:mydoctor/utils/my_string.dart';
-//
-// class FireStoreMethods {
-//   CollectionReference chatRooms =
-//       FirebaseFirestore.instance.collection(chatRoomsCollectionKey);
-//   CollectionReference doctors =
-//       FirebaseFirestore.instance.collection(doctorsCollectionKey);
-//   CollectionReference patients =
-//       FirebaseFirestore.instance.collection(patientsCollectionKey);
-//   CollectionReference blogs = FirebaseFirestore.instance.collection("blogs");
-//
-//   Future<void> insertPatientInfoFireStorage(String displayName, email, uid,
-//       profileUrl, phoneNumber, gender, isDoctor,  ) async {
-//     patients.doc(uid).set({
-//       'displayName': displayName,
-//       'uid': uid,
-//       'email': email,
-//       "profileUrl": profileUrl,
-//       "phoneNumber": phoneNumber,
-//       "gender": gender,
-//       "registerDate": DateTime.now(),
-//       "isDoctor": false,
-//       "identityFile": "null",
-//
-//     });
-//     return;
-//   }
-//
-//   Future<void> insertDoctorInfoFireStorage(String displayName, email, uid,
-//       profileUrl, identityFile, phoneNumber, gender, isDoctor,  ) async {
-//     doctors.doc(uid).set({
-//       'displayName': displayName,
-//       'uid': uid,
-//       'email': email,
-//       "profileUrl": profileUrl,
-//       "identityFile": identityFile,
-//       "phoneNumber": phoneNumber,
-//       "gender": gender,
-//       "isDoctor": isDoctor,
-//       "registerDate": DateTime.now(),
-//      });
-//     return;
-//   }
-//
-//   Future<void> updateDoctorIdentity(uid, identityFilrUrl) {
-//     return doctors
-//         .doc(uid)
-//         .update({'identityFile': identityFilrUrl})
-//         .then((value) => print("User Updated"))
-//         .catchError((error) => print("Failed to update doctor Image: $error"));
-//   } /////////////////////////////////
-//
-//   updateLastMessageSend(
-//       String chatRoomId, Map<String, dynamic> lastMessageInfoMap) {
-//     return chatRooms.doc(chatRoomId).update(lastMessageInfoMap);
-//   }
-//
-//   Future addMessage(String chatRoomId, String messageId,
-//       Map<String, dynamic> messageInfoMap) async {
-//     return chatRooms
-//         .doc(chatRoomId)
-//         .collection("chats")
-//         .doc(messageId)
-//         .set(messageInfoMap);
-//   }
-//
-// ////////////////////////////////////deleteMessage    //////////////////////////////
-//   Future<void> deleteMessage(
-//     String chatRoomId,
-//     String messageId,
-//   ) async {
-//     return chatRooms
-//         .doc(chatRoomId)
-//         .collection("chats")
-//         .doc(messageId)
-//         .delete();
-//   }
-//
-// //////////////////////////////////////////
-//   Future<void> addBlog({
-//     required String body,
-//     required String imageUrl,
-//     required String title,
-//     required String blogOwnerId,
-//     required date,
-//   }) async {
-//     await blogs.add({
-//       'body': body,
-//       'imageUrl': imageUrl,
-//       'title': title,
-//       'blogOwnerId': blogOwnerId,
-//       'date': date,
-//     });
-//   }
-// }
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mydoctor/utils/my_string.dart';
+
+class FireStoreMethods {
+  CollectionReference doctors =
+      FirebaseFirestore.instance.collection(doctorsCollectionKey);
+  CollectionReference patients =
+      FirebaseFirestore.instance.collection(patientsCollectionKey);
+
+  Future<void> insertPatientInfoFireStorage(
+    String displayName,
+    email,
+    uid,
+    phoneNumber,
+
+   ) async {
+    patients.doc(uid).set({
+      'displayName': displayName,
+      'uid': uid,
+      'bio': "bio",
+      'email': email,
+      "phoneNumber": phoneNumber,
+      "registerDate": DateTime.now(),
+      "isDoctor": false,
+      "identityFile": "identityFile",
+      "profileUrl": "profileUrl",
+    });
+    return;
+  }
+
+  Future<void> insertDoctorInfoFireStorage(
+    String displayName,
+    email,
+    uid,
+    identityFile,
+    phoneNumber,
+    isDoctor,
+  ) async {
+    doctors.doc(uid).set({
+      'displayName': displayName,
+      'uid': uid,
+      'email': email,
+      "identityFile": identityFile,
+      "phoneNumber": phoneNumber,
+      "isDoctor": isDoctor,
+      "registerDate": DateTime.now(),
+    });
+    return;
+  }
+
+  Future<void> updateDoctorIdentity(uid, identityFilrUrl) {
+    return doctors
+        .doc(uid)
+        .update({'identityFile': identityFilrUrl})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update doctor Image: $error"));
+  }
+}

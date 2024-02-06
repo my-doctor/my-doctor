@@ -14,7 +14,7 @@ const Color darkGrey = Color(0xff393E46);
 const Color grey = Colors.grey;
 
 class ThemesApp {
-  static final light = ThemeData(
+  static final light = ThemeData(useMaterial3: false,
     scaffoldBackgroundColor: homeBackGroundColor,
     appBarTheme: AppBarTheme(
       backgroundColor: homeBackGroundColor,
@@ -58,7 +58,7 @@ class ThemesApp {
     ),
   );
 
-  static final dark = ThemeData(
+  static final dark = ThemeData(useMaterial3: false,
     scaffoldBackgroundColor: Color(0xFF18191A),
     appBarTheme: AppBarTheme(
       backgroundColor: Color(0xFF242526),

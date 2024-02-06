@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mydoctor/routes/routes.dart';
 
 import '../../../utils/my_string.dart';
 import '../../controller/controllers/settings_controller.dart';
@@ -146,7 +147,7 @@ class SettingScreen extends StatelessWidget {
 
               buildTextButtonIcon(
                 backColor: mainColor,
-                onPressed: () {print(Get.isDarkMode);},
+                onPressed: () {Get.toNamed(Routes.addDoctorInfoScreen);},
                 icon: Icons.change_circle,
                 iconColor: Colors.white,
                 label: "Switch as a doctor".tr,
@@ -158,12 +159,10 @@ class SettingScreen extends StatelessWidget {
                   onPressed: () {
                     Get.defaultDialog(
                         onConfirm: () {
-                          Get.back();
-                          Get.back();
+
+
                         },
-                        onCancel: () {
-                          Get.back();
-                        },
+
                         title: "Logout".tr,
                         textConfirm: "No".tr,
                         middleText: "Are you sure to Logout...!".tr,

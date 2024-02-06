@@ -28,8 +28,8 @@ class AuthTextFromField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      cursorColor: grey,
-      style: TextStyle(color: grey),
+      cursorColor: white,
+      style: TextStyle(color: white),
       keyboardType: textInputType,
       validator: (value) => validator(value),
       decoration: InputDecoration(
@@ -41,7 +41,7 @@ class AuthTextFromField extends StatelessWidget {
           ),
           hintText: hintText,
           hintStyle: TextStyle(
-            color: grey,
+            color: white,
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),
