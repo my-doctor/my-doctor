@@ -164,10 +164,10 @@ class SettingScreen extends StatelessWidget {
                         },
 
                         title: "Logout".tr,
-                        textConfirm: "No".tr,
+                        textConfirm: "Yes".tr,
                         middleText: "Are you sure to Logout...!".tr,
                         confirmTextColor: Colors.white,
-                        textCancel: "Yes".tr,
+                        textCancel: "No".tr,
                         buttonColor: mainColor2,
                         cancelTextColor: mainColor2,
                         backgroundColor: white);
