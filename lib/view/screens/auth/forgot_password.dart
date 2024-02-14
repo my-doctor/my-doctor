@@ -8,35 +8,30 @@ import 'package:mydoctor/view/widgets/utils_widgets/icon_botton_utils.dart';
 import 'package:mydoctor/view/widgets/on_boarding_widgets/app_icon_and_name.dart';
 import 'package:mydoctor/view/widgets/utils_widgets/text_utils.dart';
 
-  import '../../widgets/auth/auth_text_from_field.dart';
+  import '../../../controller/controllers/auth_controller.dart';
+import '../../widgets/auth/auth_text_from_field.dart';
 
 class ForgotPassword extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  final controller = Get.find<AuthController>();
 
   ForgotPassword({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Container(
       width: width,
       height: height,
       decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.blue,
-              Colors.cyan,
-              mainColor2,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.1, 0.6, 1.9],
-          )),
+          image: DecorationImage(
+              image: AssetImage(
+                "assets/images/background.jpg",
+              ),
+              fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
@@ -57,7 +52,7 @@ class ForgotPassword extends StatelessWidget {
                     KIconButtom(
                         icon: Icons.arrow_back_ios,
                         color: Colors.white,
-                        size: SizeConfig.defaultSize!*2,
+                        size: 25,
                         function: () {
                           Get.back();
                         })
@@ -108,22 +103,26 @@ class ForgotPassword extends StatelessWidget {
                         const SizedBox(
                           height: 30,
                         ),
-                        AuthTextFromField(     prefixIcon: Icon(
-                          Icons.email_outlined,
-                          color: white,
-                        ),
-                          suffixIcon: Text(""),
-                          controller: emailController,
-                          obscureText: false,
-                          validator: (value) {
-                            if (!RegExp(validationEmail).hasMatch(value)) {
-                              return "Invalid Email";
-                            } else {
-                              return null;
-                            }
+                        GetBuilder<AuthController>(
+                          builder: (_) {
+                            return AuthTextFromField(     prefixIcon: Icon(
+                              Icons.email_outlined,
+                              color: white,
+                            ),
+                              suffixIcon: Text(""),
+                              controller: emailController,
+                              obscureText: false,
+                              validator: (value) {
+                                if (!RegExp(validationEmail).hasMatch(value)) {
+                                  return "Invalid Email";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              hintText: 'Email',
+                              textInputType: TextInputType.text,
+                            );
                           },
-                          hintText: 'Email',
-                          textInputType: TextInputType.text,
                         ),
                         const SizedBox(
                           height: 15,
@@ -139,26 +138,26 @@ class ForgotPassword extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AuthButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-
-                          }
-                        },
-                        text://controller.isLoading==false?
-                        Text(
-                          "Reset",
-                          style: TextStyle(
-                              fontSize: 22, color: Colors.black, fontWeight: FontWeight.w700),
-                        )
-                            // :SizedBox(
-                            // width: SizeConfig.defaultSize,
-                            // height: SizeConfig.defaultSize,
-                            // child: CircularProgressIndicator(
-                            //   color: mainColor,
-                            // ))
-                        ,
-                        width: MediaQuery.of(context).size.width / 1.3),
+                    GetBuilder<AuthController>(builder: (_) {
+                      return AuthButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              controller.resetPassWord(
+                                  emailController.text.trim());
+                            }
+                          },
+                          text:controller.isResetPass==false? Text(
+                            "Reset",
+                            style: TextStyle(
+                                fontSize: 22, color: Colors.black, fontWeight: FontWeight.w700),
+                          ):SizedBox(
+                              width: SizeConfig.defaultSize,
+                              height: SizeConfig.defaultSize,
+                              child: CircularProgressIndicator(
+                                color: mainColor,
+                              )),
+                          width: MediaQuery.of(context).size.width / 1.3);
+                    }),
                   ],
                 ),
                 const SizedBox(

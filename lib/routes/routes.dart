@@ -31,12 +31,14 @@ class AppRoutes {
     GetPage(
       name: Routes.forgotPassword,
       page: () => ForgotPassword(),
+      binding: AuthBinding()
     ),
     GetPage(
       name: Routes.loginScreen,
       page: () => LoginScreen(),
       transition: Transition.downToUp,
       transitionDuration: Duration(milliseconds: 1000),
+      binding:AuthBinding()
     ),
     GetPage(
       name: Routes.patientRegisterScreen,

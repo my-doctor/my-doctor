@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controller/controllers/home_controller.dart';
+import '../../model/patint_info_model.dart';
 import '../../utils/constants.dart';
 import '../../utils/my_string.dart';
 import '../../utils/size_config.dart';
 import '../../utils/styles.dart';
 
 import '../widgets/home_widgets/circule_image_avatar.dart';
+import '../widgets/home_widgets/reviews_and_sissions_widget.dart';
 import '../widgets/utils_widgets/height_size_box.dart';
 
 class DoctorsDetailsScreen extends StatelessWidget {
   DoctorsDetailsScreen({super.key});
 
+  String uid = Get.arguments[0];
+  String imageUrlW = Get.arguments[1];
+  String name = Get.arguments[2];
+  String description = Get.arguments[3];
+  UserModel doctorInfo = Get.arguments[4];
+  TextEditingController commentController = TextEditingController();
+  final homeController = Get.put(HomeScreenController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body: SafeArea(
+      body: SafeArea(
         child: DefaultTabController(
-          length: 1,
+          length: 2,
           child: NestedScrollView(
             floatHeaderSlivers: true,
             headerSliverBuilder:
@@ -47,7 +58,10 @@ class DoctorsDetailsScreen extends StatelessWidget {
                                       },
                                       icon: Icon(
                                         IconBroken.Arrow___Left_2,
-                                        color: Theme.of(context).textTheme.headline3!.color,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .headline3!
+                                            .color,
                                         size: Get.width * .089,
                                       )),
                                 ],
@@ -59,30 +73,39 @@ class DoctorsDetailsScreen extends StatelessWidget {
                                   height: Get.width * .25,
                                   width: Get.width * .25,
                                   child: CirculeImageAvatar(
-                                    imageUrl: imageUrl,
+                                    imageUrl: doctorInfo.profileUrl!??"",
                                     width: SizeConfig.defaultSize! * 4,
                                   )),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(width: Get.width * .089,),
+                                  SizedBox(
+                                    width: Get.width * .089,
+                                  ),
                                 ],
                               ),
                             ],
                           ),
                           HeightSizeBox(Get.width * .01),
-
-                          Text("Dr." + "Walter White",style: Theme.of(context).textTheme.headline2,),
+                          Text(
+                            "Dr." + name,
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
                           HeightSizeBox(Get.width * .01),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "The textDirection argument defaults to the ambient Directionality, if any. If there is no ambient directionality, and a text direction is going to be necessary to disambiguate start or end values for the crossAxisAlignment, the textDirection must not be null.",
+                              description,
                               style: Theme.of(context).textTheme.headline4,
                               textAlign: TextAlign.center,
                             ),
-                          )
+                          ),
+                          HeightSizeBox(Get.height * .004),
+                          GetX<HomeScreenController>(builder: (_) {return ReviewsAndSissions(
+                            numOfReviews: homeController.doctorReviewsList.length??0,
+                          );  },),
+                          HeightSizeBox(Get.height * .015),
                         ],
                       ),
                     ),
@@ -90,16 +113,214 @@ class DoctorsDetailsScreen extends StatelessWidget {
                 )
               ];
             },
-            body: Container(
-              child: Center(
-                child: Text("Doctor Reviews",style: Theme.of(context).textTheme.headline4,),
-              ),
+            body: GetX<HomeScreenController>(
+              initState: (_) =>
+                  homeController.getDoctorReviews(doctorInfo.phoneNumber!),
+              builder: (_) {
+                return TabBarView(
+
+                    children: [
+                  _buildDoctorInfoTab(context),
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    child: homeController.doctorReviewsList.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: homeController.doctorReviewsList.length,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int i) {
+                              return SizedBox(
+                                height: Get.height * 0.15,
+                                width: Get.width,
+                                child: Card(
+                                  color: Theme.of(context).cardColor,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // User Avatar
+                                        CircleAvatar(
+                                          radius: 24,
+                                          backgroundImage: NetworkImage(
+                                            userPrImage, // Replace with user avatar URL
+                                          ),
+                                        ),
+                                        SizedBox(width: 16),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              // User Name
+                                              Row(
+                                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    homeController
+                                                            .doctorReviewsList[
+                                                                i]
+                                                            .userName ??
+                                                        '',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline3,
+                                                  ),
+                                                  Spacer(),
+                                                  Row(
+                                                    children: List.generate(
+                                                      5,
+                                                      (index) => Icon(
+                                                        index <
+                                                                (homeController
+                                                                        .doctorReviewsList[
+                                                                            i]
+                                                                        .ratingValue ??
+                                                                    0)
+                                                            ? Icons.star
+                                                            : Icons.star_border,
+                                                        color: Colors.amber,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 12,
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 8),
+                                              // Comment Text
+                                              Text(
+                                                homeController
+                                                        .doctorReviewsList[i]
+                                                        .comment ??
+                                                    '',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4,
+                                              ),
+                                              SizedBox(height: 8),
+                                              // Rating Stars
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : SizedBox(
+                            child: Center(
+                              child: Text(
+                                "Theres no Reviews ",
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                            ),
+                          ),
+                  ),
+                ]);
+              },
             ),
           ),
         ),
       ),
-      floatingActionButton: GestureDetector(
-        onTap: () {},
+
+      ///                  here the floating action button to add the functionality for(adding review)
+      floatingActionButton:homeController.authBox.read("auth")==doctorsCollectionKey?SizedBox(): GestureDetector(
+        onTap: () {
+          Get.defaultDialog(
+              title: "add review",
+              content: GetX<HomeScreenController>(
+                builder: (_) {
+                  return Container(
+                    width: Get.width * .8,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: commentController,
+                          decoration: InputDecoration(
+                            hintText: 'Write your review here...',
+                            border: OutlineInputBorder(),
+                          ),
+                          maxLines: 3,
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            5,
+                            (index) => IconButton(
+                              onPressed: () {
+                                homeController.updateRateValue(index + 1);
+                              },
+                              icon: Icon(
+                                index < homeController.ratingV.value
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                color: Colors.amber,
+                                size: 36,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (homeController.ratingV.value == 0) {
+                                  Get.snackbar(
+                                    "add star",
+                                    "please add stars",
+                                    snackPosition: SnackPosition.TOP,
+                                  );
+                                } else if (commentController.text.isNotEmpty &&
+                                    commentController.text.length > 3) {
+                                  homeController.addRatingForDoctor(
+                                      doctorInfo.uid!,
+                                      commentController.text.toString(),doctorInfo.phoneNumber);
+                                } else {
+                                  Get.snackbar(
+                                    "Error",
+                                    "please enter correct comment",
+                                    snackPosition: SnackPosition.TOP,
+                                  );
+                                }
+                              },
+                              child: !homeController.isAddingReview.value
+                                  ? Text('Add Review')
+                                  : Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: SizedBox(
+                                          height: 2,
+                                          width: 30,
+                                          child: LinearProgressIndicator()),
+                                    ),
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text('Cancel'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ));
+        },
         child: Container(
           height: Get.height * .06,
           width: Get.width * .6,
@@ -140,21 +361,67 @@ class DoctorsDetailsScreen extends StatelessWidget {
 
   BoxDecoration buildBoxDecoration(@required context) {
     return BoxDecoration(
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 6,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12.withOpacity(0.5),
+          spreadRadius: 2,
+          blurRadius: 6,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
       ],
       color: Theme.of(context).canvasColor,
       borderRadius: BorderRadius.only(
         bottomLeft: Radius.circular(20),
         bottomRight: Radius.circular(20),
       ),
+    );
+  }
+
+  Widget _buildDoctorInfoTab(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Doctor Information',
+              style: Theme.of(context).textTheme.headline2,
+            ),
+            SizedBox(height: 20),
+            _buildInfoItem('Name', doctorInfo.displayName ?? '',context),
+            _buildInfoItem('Phone Number', doctorInfo.phoneNumber ?? '',context),
+            _buildInfoItem('Bio', doctorInfo.bio ?? '',context),
+            _buildInfoItem('Specialty', doctorInfo.specialet ?? '',context),
+            _buildInfoItem('Clinic Address', doctorInfo.clinicAddress ?? '',context),
+            _buildInfoItem(
+                'Available Work Days', doctorInfo.availableWorkDays ?? '',context),
+            _buildInfoItem('Work Start Hour', doctorInfo.workStartHour ?? '',context),
+            _buildInfoItem('Work End Hour', doctorInfo.workEndHour ?? '',context),
+            _buildInfoItem('Notes', doctorInfo.notes ?? '',context),
+            SizedBox(height: 30,)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoItem(String label, String value,context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.headline3,
+        ),
+        SizedBox(height: 8),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.headline4,
+        ),
+        Divider(color: Colors.grey[300]),
+        SizedBox(height: 16),
+      ],
     );
   }
 }

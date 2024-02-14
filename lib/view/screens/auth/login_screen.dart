@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../controller/controllers/auth_controller.dart';
 import '../../../routes/routes.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/my_string.dart';
@@ -13,9 +14,13 @@ import '../../widgets/on_boarding_widgets/app_icon_and_name.dart';
 import '../../widgets/utils_widgets/text_utils.dart';
 
 class LoginScreen extends StatelessWidget {
-  TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  final controller = Get.find<AuthController>();
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -57,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Form(
-                    // Add your form key and other form elements here
+                    key: formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -71,56 +76,71 @@ class LoginScreen extends StatelessWidget {
                         const SizedBox(
                           height: 30,
                         ),
-                        AuthTextFromField(
-                          prefixIcon: Icon(
-                            Icons.email_outlined,
-                            color: white,
-                          ),
-                          suffixIcon: Text(""),
-                          controller: emailController,
-                          obscureText: false,
-                          validator: (value) {
-                            if (!RegExp(validationEmail).hasMatch(value)) {
-                              return "Invalid Email";
-                            } else {
-                              return null;
-                            }
+                        GetBuilder<AuthController>(
+                          builder: (_) {
+                            return AuthTextFromField(
+                              prefixIcon: CountryCodePicker(
+                                flagWidth: Get.width * .05,
+                                onChanged: (code) {
+                                  controller.updateCountryCode(code.dialCode!);
+                                },
+                                initialSelection: 'IQ',
+                                // Set your initial country here
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              suffixIcon: SizedBox(),
+                              controller: phoneController,
+                              obscureText: false,
+                              validator: (value) {
+                                if (value.length == 0) {
+                                  return 'Please enter mobile number';
+                                } else if (!RegExp(validationPhone)
+                                    .hasMatch(value)) {
+                                  return 'Please enter valid mobile number';
+                                }
+                                return null;
+                              },
+                              hintText: 'xxx xxx xxxx',
+                              textInputType: TextInputType.phone,
+                            );
                           },
-                          hintText: 'Email',
-                          textInputType: TextInputType.text,
                         ),
                         const SizedBox(
                           height: 15,
                         ),
-                        AuthTextFromField(
-                          prefixIcon: Icon(
-                            Icons.lock_outline_rounded,
-                            color: white,
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                         //     controller.visibility();
-                            },
-                            icon:
-                            // controller.isVisibilty
-                            //     ? Icon(Icons.visibility_off)
-                            //     :
-                            Icon(Icons.visibility),
-                            color: mainColor3,
-                          ),
-                          controller: passwordController,
-                          obscureText:
-                         // controller.isVisibilty ? false :
-                          true,
-                          validator: (value) {
-                            if (value.toString().length < 6) {
-                              return "Password is too short";
-                            } else {
-                              return null;
-                            }
+                        GetBuilder<AuthController>(
+                          builder: (_) {
+                            return AuthTextFromField(
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: white,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.visibility();
+                                },
+                                icon: controller.isVisibilty
+                                    ? Icon(Icons.visibility_off)
+                                    : Icon(Icons.visibility),
+                                color: mainColor3,
+                              ),
+                              controller: passwordController,
+                              obscureText:
+                                  controller.isVisibilty ? false : true,
+                              validator: (value) {
+                                if (value.toString().length < 6) {
+                                  return "Password is too short";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              hintText: 'Password',
+                              textInputType: TextInputType.visiblePassword,
+                            );
                           },
-                          hintText: 'Password',
-                          textInputType: TextInputType.visiblePassword,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -137,15 +157,27 @@ class LoginScreen extends StatelessWidget {
                                   textDecoration: TextDecoration.underline,
                                 )),
                           ],
-                        ),   SizedBox(
-                          height: Get.height*.1
-                          ,
                         ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: AuthButton(
-                                onPressed: () { Get.toNamed(Routes.homeScreen); },
-                                text: true
+                        SizedBox(
+                          height: Get.height * .1,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: GetBuilder<AuthController>(builder: (_) {
+                            return AuthButton(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    String email = emailController.text.trim();
+                                    String password = passwordController.text;
+                                    String phoneNumber =
+                                        controller.countryCode.value +
+                                            phoneController.text;
+                                    controller.loginUsingFirebase(
+                                        phoneNumber: phoneNumber,
+                                        password: password);
+                                  }
+                                },
+                                text: controller.isLoading == false
                                     ? Text(
                                         "Login",
                                         style: TextStyle(
@@ -159,8 +191,10 @@ class LoginScreen extends StatelessWidget {
                                         child: CircularProgressIndicator(
                                           color: mainColor,
                                         )),
-                                width: width * .8),
-                          ),            const SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.3);
+                          }),
+                        ),
+                        const SizedBox(
                           height: 30,
                         ),
                         // نص sign up
@@ -176,7 +210,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             TextButton(
                                 onPressed: () {
-Get.toNamed(Routes.patientRegisterScreen);
+                                  Get.toNamed(Routes.patientRegisterScreen);
                                 },
                                 child: KTextUtils(
                                   text: "SignUp",
@@ -188,91 +222,8 @@ Get.toNamed(Routes.patientRegisterScreen);
                           ],
                         ),
 
-                        //     hei
+                        // Your sign up text and button here
                       ],
-                      // children: [
-                      //   // Your login text and form elements here
-                      //   KTextUtils(
-                      //     text: "Login",
-                      //     size: 35,
-                      //     color: const Color(0xffffffff),
-                      //     fontWeight: FontWeight.bold,
-                      //     textDecoration: TextDecoration.none,
-                      //   ),
-                      //   const SizedBox(
-                      //     height: 80,
-                      //   ),
-                      //   // Country code picker
-                      //   CountryCodePicker(
-                      //     onChanged: (code) {
-                      //       // Handle country code change
-                      //     },
-                      //     initialSelection: 'US',
-                      //     // Set your initial country here
-                      //     textStyle: TextStyle(
-                      //       color: Colors.white,
-                      //       fontSize: 18,
-                      //     ),
-                      //   ),
-                      //
-                      //   // Phone number text field
-                      //   AuthTextFromField(
-                      //     prefixIcon: Icon(
-                      //       Icons.phone_android,
-                      //       color: grey,
-                      //     ),
-                      //     suffixIcon: Text(""),
-                      //     controller: phoneNumberController,
-                      //     obscureText: false,
-                      //     validator: (value) {
-                      //       if (value.length == 0) {
-                      //         return 'Please enter mobile number';
-                      //       } else if (!RegExp(validationPhone)
-                      //           .hasMatch(value)) {
-                      //         return 'Please enter valid mobile number';
-                      //       }
-                      //       return null;
-                      //     },
-                      //     hintText: 'Phone number',
-                      //     textInputType: TextInputType.phone,
-                      //   ),
-                      //   SizedBox(
-                      //     height: 60,
-                      //   ),
-                      //   // Your login button here
-                      //   Align(
-                      //     alignment: Alignment.center,
-                      //     child: AuthButton(
-                      //         onPressed: () {
-                      //           Get.to(
-                      //             () => PinCodeVerificationScreen(
-                      //               phoneNumber: "+0011001",
-                      //             ),
-                      //             transition: Transition.rightToLeft,
-                      //             duration: Duration(milliseconds: 1000),
-                      //           );
-                      //         },
-                      //         text: true
-                      //             ? Text(
-                      //                 "Login",
-                      //                 style: TextStyle(
-                      //                     fontSize: 22,
-                      //                     color: Colors.black,
-                      //                     fontWeight: FontWeight.w700),
-                      //               )
-                      //             : SizedBox(
-                      //                 width: SizeConfig.defaultSize,
-                      //                 height: SizeConfig.defaultSize,
-                      //                 child: CircularProgressIndicator(
-                      //                   color: mainColor,
-                      //                 )),
-                      //         width: width * .8),
-                      //   ),
-                      //   SizedBox(
-                      //     height: 30,
-                      //   ),
-                      //   // Your sign up text and button here
-                      // ],
                     ),
                   ),
                 ),

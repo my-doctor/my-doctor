@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../controller/controllers/home_controller.dart';
 import '../../../utils/constants.dart';
 
 class SearchWidget extends StatelessWidget {
   SearchWidget({Key? key}) : super(key: key);
+  final controller = Get.put(HomeScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -20,39 +22,50 @@ class SearchWidget extends StatelessWidget {
           decoration: BoxDecoration(
               color: grey.withOpacity(.25),
               borderRadius: BorderRadius.circular(20)),
-          child: TextField(
+          child: TextFormField(
             onChanged: (value) {
-              if (value != "") {}
+              controller.addSearchToList(value);
             },
-            cursorColor: Color(0xFF000000),
-            keyboardType: TextInputType.text,
+            controller: controller.search,
             decoration: InputDecoration(
-                // suffixIcon: controller.textEditingController.text == ""
-                //     ? Text("")
-                //     : IconButton(
-                //         icon: Icon(
-                //           Icons.clear,
-                //           color: Colors.black54,
-                //         ),
-                //         onPressed: () {
-                //           controller.clearSearch();
-                //         },
-                //       ),
-                prefixIcon: IconButton(
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    controller.addSearchToList(
+                      controller.search.text,
+                    );
+                    //////////////
+                  },
                   icon: Icon(
                     Icons.search,
-                    color: Theme.of(context).textTheme.headline3!.color,
+                    color: Colors.black,
                   ),
-                  onPressed: () {
-                    // if (
-                    // // controller.textEditingController.text != "") {
-                    // //   controller.onSearchBtnClick();
-                    // }
-                  },
                 ),
-                hintText: "Enter doctor name..".tr,
-                hintStyle: Theme.of(context).textTheme.headline3,
-                border: InputBorder.none),
+                hintText: "Search ...",
+                hintStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+                disabledBorder: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: mainColor2, width: 2),
+                    borderRadius: BorderRadius.circular(25)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: mainColor2, width: 2),
+                    borderRadius: BorderRadius.circular(25)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: mainColor2, width: 2),
+                    borderRadius: BorderRadius.circular(25))),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'search must not be null';
+              }
+              return null;
+            },
+            onFieldSubmitted: (val) {
+              ////////////////////////
+            },
           )),
     );
   }

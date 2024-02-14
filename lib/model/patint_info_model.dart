@@ -10,6 +10,13 @@ class UserModel {
   bool? isDoctor;
   String? uid;
   String? profileUrl;
+  String? specialet;
+  String? password;
+  String? clinicAddress;
+  String? availableWorkDays;
+  String? workStartHour;
+  String? workEndHour;
+  String? notes;
 
   UserModel(
 
@@ -22,6 +29,13 @@ class UserModel {
     this.bio,
     this.registerDate,
     this.profileUrl,
+    this.specialet,
+    this.password,
+    this.clinicAddress,
+    this.availableWorkDays,
+    this.workStartHour,
+    this.workEndHour,
+    this.notes,
   );
 
   factory UserModel.fromMap(map) {
@@ -35,6 +49,34 @@ class UserModel {
       map['bio'],
       map['registerDate'],
       map['profileUrl'],
+      map['specialet'],
+      map['password'],
+      map['clinicAddress'],
+      map['availableWorkDays'],
+      map['workStartHour'],
+      map['workEndHour'],
+      map['notes'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'displayName': displayName,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'identityFile': identityFile,
+      'bio': bio,
+      'registerDate': registerDate,
+      'isDoctor': isDoctor,
+      'uid': uid,
+      'profileUrl': profileUrl,
+      'specialet': specialet,
+      'password': password,
+      'clinicAddress': clinicAddress,
+      'availableWorkDays': availableWorkDays,
+      'workStartHour': workStartHour,
+      'workEndHour': workEndHour,
+      'notes': notes,
+    };
   }
 }

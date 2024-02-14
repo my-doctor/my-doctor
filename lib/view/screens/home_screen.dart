@@ -9,7 +9,7 @@ import '../../utils/styles.dart';
 class HomeScreen extends StatelessWidget {
     HomeScreen({super.key});
     PageController pageController = PageController();
-    final controller = Get.find<HomeScreenController>();
+    final controller = Get.put(HomeScreenController());
 
   @override
   Widget build(BuildContext context) {

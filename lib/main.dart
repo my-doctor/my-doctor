@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
     ]);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: Locale(GetStorage().read<String>('lang').toString()),
+      locale: Locale(GetStorage().read<String>('lang').toString()??ara),
       translations: LocaliztionApp(),
-      fallbackLocale: Locale(ene),
+      fallbackLocale: Locale(ara),
       title: 'myDoctor ',
       theme: ThemesApp.light,
       darkTheme: ThemesApp.dark,
@@ -38,9 +38,20 @@ class MyApp extends StatelessWidget {
       initialRoute:GetStorage().read("auth") == patientsCollectionKey
           ? Routes.homeScreen
           : GetStorage().read("auth") == doctorsCollectionKey
-          ? Routes.doctorMainScreen
+          ? Routes.homeScreen
           :  Routes.loginScreen,
       getPages: AppRoutes.routes,
     );
   }
 }
+/*
+Variant: debug
+Config: debug
+Store: C:\Users\Levi\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: CF:DC:41:EA:A5:3E:80:DD:C4:62:96:18:30:D2:17:3D
+SHA1: 59:FA:16:DA:36:EA:E8:AE:7A:E6:FF:80:39:11:E2:F9:1E:89:3C:25
+SHA-256: BC:19:A0:6B:C4:CE:61:8B:25:B8:E4:7F:F4:D6:34:8D:09:41:85:F7:66:A9:0F:8A:C3:38:86:78:D1:B2:C8:BF
+Valid until: Tuesday, December 19, 2051
+
+ */

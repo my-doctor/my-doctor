@@ -13,11 +13,11 @@ class MedicalSpecialties extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         shadowColor: Colors.black,
+        shadowColor: Colors.black,
         elevation: 2,
         title: Text(
           "Medical Specialties".tr,
-         ),
+        ),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -26,34 +26,26 @@ class MedicalSpecialties extends StatelessWidget {
             ? medicalSpecialtiesAr.length
             : medicalSpecialtiesEn.length,
         itemBuilder: (BuildContext context, int index) {
-
-          return AnimationConfiguration.staggeredList(
-            position: index,
-            duration: Duration(milliseconds: 500),
-            child: SlideAnimation(
-              horizontalOffset: 100,
-              child: FadeInAnimation(
-                child: InkWell(
-                  onTap: () {
-                    Get.to(
-                      () => DoctorsBySpecialtiesScreen(
-                          specialties: Get.locale?.languageCode == "ar"
-                              ? medicalSpecialtiesAr[index]['name']!
-                              : medicalSpecialtiesEn[index]['name']!),
-                      transition: Transition.rightToLeft,
-                      //    duration: Duration(seconds: 1)
-                    );
-                  },
-                  child: CustomListTile(
-                    title: Get.locale?.languageCode == "ar"
-                        ? medicalSpecialtiesAr[index]['name']!
-                        : medicalSpecialtiesEn[index]['name']!,
-                    description: Get.locale?.languageCode == "ar"
-                        ? medicalSpecialtiesAr[index]['description']!
-                        : medicalSpecialtiesEn[index]['description']!,
-                  ),
+          return InkWell(
+            onTap: () {
+              Get.to(
+                () => DoctorsBySpecialtiesScreen(
+                  specialties: Get.locale?.languageCode == "ar"
+                      ? medicalSpecialtiesAr[index]['name']!
+                      : medicalSpecialtiesEn[index]['name']!,
+                  specialtiesEn: medicalSpecialtiesEn[index]['name']!,
                 ),
-              ),
+                transition: Transition.rightToLeft,
+                //    duration: Duration(seconds: 1)
+              );
+            },
+            child: CustomListTile(
+              title: Get.locale?.languageCode == "ar"
+                  ? medicalSpecialtiesAr[index]['name']!
+                  : medicalSpecialtiesEn[index]['name']!,
+              description: Get.locale?.languageCode == "ar"
+                  ? medicalSpecialtiesAr[index]['description']!
+                  : medicalSpecialtiesEn[index]['description']!,
             ),
           );
         },

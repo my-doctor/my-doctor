@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,8 @@ class PatientRegisterScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   final controller = Get.find<AuthController>();
@@ -132,52 +135,65 @@ class PatientRegisterScreen extends StatelessWidget {
                       ),
 
                       //Phone number
-                      AuthTextFromField(
-                        prefixIcon: Icon(
-                          Icons.phone_android,
-                          color: white,
-                        ),
-                        suffixIcon: Text(""),
-                        controller: phoneController,
-                        obscureText: false,
-                        validator: (value) {
-                          if (value.length == 0) {
-                            return 'Please enter mobile number';
-                          } else if (!RegExp(validationPhone).hasMatch(value)) {
-                            return 'Please enter valid mobile number';
-                          }
-                          return null;
+                      GetBuilder<AuthController>(
+                        builder: (_) {
+                          return AuthTextFromField(
+                            prefixIcon: CountryCodePicker(
+                              flagWidth: Get.width * .05,
+                              onChanged: (code) {
+                                controller.updateCountryCode(code.dialCode!);
+                              },
+                              initialSelection: 'IQ',
+                              // Set your initial country here
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            suffixIcon: SizedBox(),
+                            controller: phoneController,
+                            obscureText: false,
+                            validator: (value) {
+                              if (value.length == 0) {
+                                return 'Please enter mobile number';
+                              } else if (!RegExp(validationPhone)
+                                  .hasMatch(value)) {
+                                return 'Please enter valid mobile number';
+                              }
+                              return null;
+                            },
+                            hintText: 'xxx xxx xxxx',
+                            textInputType: TextInputType.phone,
+                          );
                         },
-                        hintText: 'Phone number',
-                        textInputType: TextInputType.phone,
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       //Email address
-                      AuthTextFromField(
-                        prefixIcon: Icon(
-                          Icons.email_outlined,
-                          color: white,
-                        ),
-                        suffixIcon: Text(""),
-                        controller: emailController,
-                        obscureText: false,
-                        validator: (value) {
-                          if (value.length == 0) {
-                            return 'Please enter email';
-                          } else if (!RegExp(validationEmail).hasMatch(value)) {
-                            return "Invalid Email";
-                          } else {
-                            return null;
-                          }
-                        },
-                        hintText: 'Email',
-                        textInputType: TextInputType.emailAddress,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      // AuthTextFromField(
+                      //   prefixIcon: Icon(
+                      //     Icons.email_outlined,
+                      //     color: white,
+                      //   ),
+                      //   suffixIcon: Text(""),
+                      //   controller: emailController,
+                      //   obscureText: false,
+                      //   validator: (value) {
+                      //     if (value.length == 0) {
+                      //       return 'Please enter email';
+                      //     } else if (!RegExp(validationEmail).hasMatch(value)) {
+                      //       return "Invalid Email";
+                      //     } else {
+                      //       return null;
+                      //     }
+                      //   },
+                      //   hintText: 'Email',
+                      //   textInputType: TextInputType.emailAddress,
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
 
                       //password
                       GetBuilder<AuthController>(
@@ -189,17 +205,15 @@ class PatientRegisterScreen extends StatelessWidget {
                             ),
                             suffixIcon: IconButton(
                               onPressed: () {
-                              controller.visibility();
+                                controller.visibility();
                               },
-                              icon:  controller.isVisibilty
-                                        ? Icon(Icons.visibility_off)
-                                     :
-                                  Icon(Icons.visibility),
+                              icon: controller.isVisibilty
+                                  ? Icon(Icons.visibility_off)
+                                  : Icon(Icons.visibility),
                               color: mainColor3,
                             ),
                             controller: passwordController,
-                            obscureText:  controller.isVisibilty ? false :
-                                true,
+                            obscureText: controller.isVisibilty ? false : true,
                             validator: (value) {
                               if (value.toString().length < 6) {
                                 return "Password is too short";
@@ -215,21 +229,60 @@ class PatientRegisterScreen extends StatelessWidget {
                       SizedBox(
                         height: 10,
                       ),
-                      //   GenderWidget(),
+
+                      //password
+                      GetBuilder<AuthController>(
+                        builder: (_) {
+                          return AuthTextFromField(
+                            prefixIcon: Icon(
+                              Icons.lock_outline_rounded,
+                              color: white,
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                controller.visibility2();
+                              },
+                              icon: controller.isVisibilty2
+                                  ? Icon(Icons.visibility_off)
+                                  : Icon(Icons.visibility),
+                              color: mainColor3,
+                            ),
+                            controller: confirmPasswordController,
+                            obscureText: controller.isVisibilty2 ? false : true,
+                            validator: (value) {
+                              if (confirmPasswordController.text.toString() !=
+                                  passwordController.text.toString()) {
+                                return "The passwords must be identical";
+                              } else if (value.toString().length < 6) {
+                                return "Password is too short";
+                              } else {
+                                return null;
+                              }
+                            },
+                            hintText: 'confirm password',
+                            textInputType: TextInputType.visiblePassword,
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       SizedBox(
                         height: 25,
                       ),
                       Obx(
-                            () {
+                        () {
                           return AuthButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
                                   String name = nameController.text;
 
-                                  String email = emailController.text.trim();
+                                  String email = "email@e.com";
                                   String password = passwordController.text;
-                                  String phoneNumber = phoneController.text;
-                                  controller.patientSignUpUsingFirebase(
+                                  String phoneNumber =
+                                      controller.countryCode.value +
+                                          phoneController.text;
+                                  controller.registerWithPhoneNumber(
                                     name: name,
                                     email: email,
                                     password: password,
@@ -239,18 +292,18 @@ class PatientRegisterScreen extends StatelessWidget {
                               },
                               text: controller.isLoading.value == false
                                   ? Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w700),
-                              )
+                                      "Sign Up",
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700),
+                                    )
                                   : SizedBox(
-                                  width: 25,
-                                  height: 25,
-                                  child: CircularProgressIndicator(
-                                    color: mainColor,
-                                  )),
+                                      width: 25,
+                                      height: 25,
+                                      child: CircularProgressIndicator(
+                                        color: mainColor,
+                                      )),
                               width: width * .5);
                         },
                       ),

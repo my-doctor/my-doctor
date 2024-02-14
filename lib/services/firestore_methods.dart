@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mydoctor/utils/my_string.dart';
 
+import '../model/patint_info_model.dart';
+
 class FireStoreMethods {
   CollectionReference doctors =
       FirebaseFirestore.instance.collection(doctorsCollectionKey);
@@ -12,30 +14,34 @@ class FireStoreMethods {
     email,
     uid,
     phoneNumber,
+    password,
+  ) async {
+    CollectionReference patients =
+        FirebaseFirestore.instance.collection('patients');
+    UserModel user = UserModel(
+      displayName,
+      uid,
+      email,
+      phoneNumber,
+      false,
+      "identityFile",
+      "bio",
+      Timestamp.fromDate(DateTime.now()),
+      "https://firebasestorage.googleapis.com/v0/b/mydoctor-8f4ab.appspot.com/o/profile%20-%20Copy.png?alt=media&token=0233425a-970f-442f-857c-b44b18c0a309",
+      "specialet",
+      password,
+      "clinicAddress",
+      "availableWorkDays",
+      "workStartHour",
+      "workEndHour",
+      "notes",
+    );
 
-   ) async {
-    patients.doc(uid).set({
-      'displayName': displayName,
-      'uid': uid,
-      'bio': "bio",
-      'email': email,
-      "phoneNumber": phoneNumber,
-      "registerDate": DateTime.now(),
-      "isDoctor": false,
-      "identityFile": "identityFile",
-      "profileUrl": "profileUrl",
-    });
-    return;
+    await patients.doc(phoneNumber).set(user.toJson());
   }
 
-  Future<void> insertDoctorInfoFireStorage(
-    String displayName,
-    email,
-    uid,
-    identityFile,
-    phoneNumber,
-    isDoctor,
-  ) async {
+  Future<void> insertDoctorInfoFireStorage(String displayName, email, uid,
+      identityFile, phoneNumber, isDoctor, specialet) async {
     doctors.doc(uid).set({
       'displayName': displayName,
       'uid': uid,
@@ -44,6 +50,25 @@ class FireStoreMethods {
       "phoneNumber": phoneNumber,
       "isDoctor": isDoctor,
       "registerDate": DateTime.now(),
+    });
+    return;
+  }
+
+  Future<void> addReview({
+    required String userId,
+    required String doctorId,
+    required String userName,
+    required int ratingValue,
+    required String comment,
+    required String phoneNumber,
+
+  }) async {
+    await doctors.doc(phoneNumber).collection(reviewsCollectionKey).doc().set({
+      'userName': userName,
+      'userId': userId,
+      'rateDate': DateTime.now(),
+      'ratingValue': ratingValue,
+      'comment': comment,
     });
     return;
   }

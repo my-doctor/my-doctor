@@ -33,12 +33,18 @@ class CirculeImageAvatar extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(width * 2),
           child: FadeInImage.assetNetwork(
-              fit: BoxFit.cover,
-              placeholder: "assets/animations/63065-profile-in-out.gif",
-              image: imageUrl,
+            fit: BoxFit.cover,
+            placeholder: "assets/animations/63065-profile-in-out.gif",
+            image: imageUrl,
+            placeholderErrorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                  "assets/images/profile.png"); // Replace YourErrorWidget() with your error widget
+            },
             imageErrorBuilder: (context, error, stackTrace) {
-              return Image.asset("assets/images/profile.png"); // Replace YourErrorWidget() with your error widget
-            },),
+              return Image.asset(
+                  "assets/images/profile.png"); // Replace YourErrorWidget() with your error widget
+            },
+          ),
         ),
       ),
     );
