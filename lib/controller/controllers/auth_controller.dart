@@ -255,29 +255,40 @@ class AuthController extends GetxController {
       isLoading.value = true;
       update();
 
-        final p = await FirebaseFirestore.instance
-            .collection(patientsCollectionKey)
-            .doc(phoneNumber) // varuId in your case
-            .get();
-        final d = await FirebaseFirestore.instance
-            .collection(doctorsCollectionKey)
-            .doc(phoneNumber) // varuId in your case
-            .get();
-        authBox.write(KUid,phoneNumber);
-        if (p.exists) {
-          Get.offNamed(Routes.homeScreen);
-          authBox.write("auth", patientsCollectionKey);
-          isLoading.value = false;
-        } else if (d.exists) {
-          Get.offNamed(Routes.homeScreen);
-          authBox.write("auth", doctorsCollectionKey);
-          isLoading.value = false;
-        } else {
-          isLoading.value = false;
-          Get.snackbar("Error", "try to login again",
-              snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
-        }
-        update();
+      final p = await FirebaseFirestore.instance
+          .collection(patientsCollectionKey)
+          .where("password", isEqualTo: password)
+          .where("phoneNumber",isEqualTo: phoneNumber)
+          .get();
+      final d = await FirebaseFirestore.instance
+          .collection(doctorsCollectionKey)
+
+          .where("password", isEqualTo: password)
+          .where("phoneNumber",isEqualTo: phoneNumber)  .get();
+      final a = await FirebaseFirestore.instance
+          .collection(adminCollectionKey)
+          .where("password", isEqualTo: password)
+          .where("phoneNumber",isEqualTo: phoneNumber) // varuId in your case
+          .get();
+      authBox.write(KUid, phoneNumber);
+      if (p.docs.isNotEmpty) {
+        Get.offNamed(Routes.homeScreen);
+        authBox.write("auth", patientsCollectionKey);
+        isLoading.value = false;
+      } else if (d.docs.isNotEmpty) {
+        Get.offNamed(Routes.homeScreen);
+        authBox.write("auth", doctorsCollectionKey);
+        isLoading.value = false;
+      } else if (a.docs.isNotEmpty) {
+        Get.offNamed(Routes.homeScreen);
+        authBox.write("auth", adminCollectionKey);
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        Get.snackbar("Error", "try to login again with correct password and number",
+            snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
+      }
+      update();
 
       update();
 

@@ -76,7 +76,11 @@ class HomeScreenController extends GetxController {
   }
 
   getDoctorsInfo() async {
-    await FireStoreMethods().doctors.snapshots().listen((event) {
+    await FireStoreMethods()
+        .doctors
+        .where('isDoctor', isEqualTo: true)
+        .snapshots()
+        .listen((event) {
       doctorsList.clear();
       for (int i = 0; i < event.docs.length; i++) {
         doctorsList.add(UserModel.fromMap(event.docs[i]));
@@ -191,7 +195,8 @@ class HomeScreenController extends GetxController {
         });
         isAddingReview.value = false;
         print("2");
-      } catch (error) {  ratingV.value = 0;
+      } catch (error) {
+        ratingV.value = 0;
         print("3");
 
         Get.snackbar(

@@ -7,6 +7,7 @@ import 'package:mydoctor/view/screens/splash_page_view/splash_screen.dart';
 
 import '../controller/bindings/add_doctor_binding.dart';
 import '../controller/bindings/auth_binding.dart';
+import '../view/screens/admin_screens/doctors_switch_screen.dart';
 import '../view/screens/auth/forgot_password.dart';
 import '../view/screens/auth/patient_register_screen.dart';
 import '../view/screens/doctor_screens/add_doctor_info_screen.dart';
@@ -29,22 +30,19 @@ class AppRoutes {
       page: () => PinCodeVerificationScreen(),
     ),
     GetPage(
-      name: Routes.forgotPassword,
-      page: () => ForgotPassword(),
-      binding: AuthBinding()
-    ),
+        name: Routes.forgotPassword,
+        page: () => ForgotPassword(),
+        binding: AuthBinding()),
     GetPage(
-      name: Routes.loginScreen,
-      page: () => LoginScreen(),
-      transition: Transition.downToUp,
-      transitionDuration: Duration(milliseconds: 1000),
-      binding:AuthBinding()
-    ),
+        name: Routes.loginScreen,
+        page: () => LoginScreen(),
+        transition: Transition.downToUp,
+        transitionDuration: Duration(milliseconds: 1000),
+        binding: AuthBinding()),
     GetPage(
-      name: Routes.patientRegisterScreen,
-      page: () => PatientRegisterScreen(),
-      bindings: [AuthBinding()]
-    ),
+        name: Routes.patientRegisterScreen,
+        page: () => PatientRegisterScreen(),
+        bindings: [AuthBinding()]),
     GetPage(
       name: Routes.doctorMainScreen,
       page: () => DoctorMainScreen(),
@@ -60,6 +58,10 @@ class AppRoutes {
         name: Routes.addDoctorInfoScreen,
         page: () => AddDoctorInfoScreen(),
         bindings: [AddDoctorBinding(), AuthBinding()]),
+    GetPage(
+        name: Routes.doctorSwitchRequistListScreen,
+        page: () => DoctorSwitchRequistListScreen(),
+        bindings: [AddDoctorBinding(),HomeBinding(), AuthBinding()]),
   ];
 }
 
@@ -72,5 +74,6 @@ class Routes {
   static const patientRegisterScreen = "/patientRegisterScreen";
   static const doctorMainScreen = "/doctorMainScreen";
   static const addDoctorInfoScreen = "/addDoctorInfoScreen";
+  static const doctorSwitchRequistListScreen = "/doctorSwitchRequistListScreen";
   static const forgotPassword = "/forgotPassword";
 }

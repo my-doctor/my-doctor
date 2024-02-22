@@ -14,6 +14,7 @@ const String imageUrl = "https://avatars.githubusercontent.com/u/56220506?s=80&v
 const String userPrImage = "https://firebasestorage.googleapis.com/v0/b/mydoctor-8f4ab.appspot.com/o/profile%20-%20Copy.png?alt=media&token=0233425a-970f-442f-857c-b44b18c0a309";
 const String patientsCollectionKey = "patients";
 const String doctorsCollectionKey = "doctors";
+const String adminCollectionKey = "admin";
 const String reviewsCollectionKey = 'reviews';
 const String KUid = "uid";
 const String KVerificationId = "KVerificationId";

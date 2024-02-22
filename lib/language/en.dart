@@ -43,5 +43,7 @@ const Map<String, String> en = {
   "to :":  "to :",
   "enter doctor name to search":  "enter doctor name to search",
   "Search ...":  "Search ...",
+  "Show doctors requist":  "Show doctors requist",
+  "Your Requist under revision":  "Your Requist under revision",
 
 };

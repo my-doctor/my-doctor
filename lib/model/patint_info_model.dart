@@ -8,6 +8,7 @@ class UserModel {
   String? bio;
   Timestamp? registerDate;
   bool? isDoctor;
+  bool? isDoctorRequist;
   String? uid;
   String? profileUrl;
   String? specialet;
@@ -25,6 +26,7 @@ class UserModel {
     this.email,
     this.phoneNumber,
     this.isDoctor,
+    this.isDoctorRequist,
     this.identityFile,
     this.bio,
     this.registerDate,
@@ -45,6 +47,7 @@ class UserModel {
       map['email'],
       map['phoneNumber'],
       map['isDoctor'],
+      map['isDoctorRequist'],
       map['identityFile'],
       map['bio'],
       map['registerDate'],
@@ -68,6 +71,7 @@ class UserModel {
       'bio': bio,
       'registerDate': registerDate,
       'isDoctor': isDoctor,
+      'isDoctorRequist': isDoctorRequist,
       'uid': uid,
       'profileUrl': profileUrl,
       'specialet': specialet,

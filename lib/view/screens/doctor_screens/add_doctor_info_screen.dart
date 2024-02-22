@@ -345,6 +345,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
                                                 data.profileUrl!,
                                                 nameController.text,
                                                 phoneController.text,
+                                                true,
                                                 emailController.text,
                                                 controller.specialization,
                                                 doctorsCollectionKey,

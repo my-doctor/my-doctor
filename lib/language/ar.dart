@@ -42,4 +42,6 @@ const Map<String, String> ar = {
   "to :":"إلى :",
   "enter doctor name to search":"أدخل اسم الطبيب للبحث",
   "Search ...":"ابحث ...",
+  "Show doctors requist":"اظهر طلبات التحويل الي دكتور",
+  "Your Requist under revision":"طلبك التبديل كطبيب قيد المراجعه",
 };

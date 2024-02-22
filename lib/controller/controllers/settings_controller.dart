@@ -22,6 +22,7 @@ class SettingController extends GetxController {
   void onInit() async {
     super.onInit();
     getUserData();
+    getDoctorsRequistList();
     langLocal = await getLanguage;
   }
 
@@ -32,6 +33,53 @@ class SettingController extends GetxController {
     } else {
       return false;
     }
+  }
+
+  bool isAdmin() {
+    // Your logic to determine if the user is a admin
+    if (authBox.read("auth") == adminCollectionKey) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  RxBool isLoading = false.obs;
+
+  confirmDoctorRequest(String phoneNumber) {
+    isLoading.value = true;
+    update();
+    return FirebaseFirestore.instance
+        .collection(doctorsCollectionKey)
+        .doc(phoneNumber)
+        .update({
+      "isDoctor": true,
+      "isDoctorRequist": false,
+    }).then((value) async {
+
+
+
+      Get.snackbar(
+        "Updated ✔✔",
+        "Doctor Confirmed Successfully",
+        backgroundColor: Colors.green,
+        snackPosition: SnackPosition.TOP,
+      );
+      isLoading.value = false;
+      update();
+
+      //  Navigator.pop(context);
+      update();
+    }).catchError((error) {
+      isLoading.value = false;
+      update();
+      Get.snackbar(
+        "Error",
+        "$error",
+        backgroundColor: Colors.red,
+        snackPosition: SnackPosition.TOP,
+      );
+    });
   }
 
   getUserData() async {
@@ -53,6 +101,23 @@ class SettingController extends GetxController {
       }
       //  update();
     });
+  }
+
+  RxList doctorsRequistList = [].obs;
+
+  getDoctorsRequistList() async {
+    await FireStoreMethods()
+        .doctors
+        .where('isDoctorRequist', isEqualTo: true)
+        .snapshots()
+        .listen((event) {
+      doctorsRequistList.clear();
+      for (int i = 0; i < event.docs.length; i++) {
+        doctorsRequistList.add(UserModel.fromMap(event.docs[i]));
+      }
+      update();
+    });
+    //   update();
   }
 
   void saveLanguage(String lang) async {

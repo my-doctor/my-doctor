@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mydoctor/routes/routes.dart';
 import 'package:mydoctor/utils/my_string.dart';
 
 import '../../model/patint_info_model.dart';
@@ -44,8 +45,6 @@ class AddDoctorController extends GetxController {
   File? identityImageFile;
   GetStorage authBox = GetStorage();
 
-
-
   getIdentityImageFile() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -58,7 +57,6 @@ class AddDoctorController extends GetxController {
   }
 
   clearImage() {
-
     identityImageFile = null;
     update();
   }
@@ -72,11 +70,12 @@ class AddDoctorController extends GetxController {
     isLoading = true;
     update();
     return FirebaseFirestore.instance
-        .collection(collectionKey)
+        .collection(doctorsCollectionKey)
         .doc(phoneNumber)
         .set(map)
         .then((value) async {
       await authBox.write("auth", doctorsCollectionKey);
+      await authBox.write(KUid, phoneNumber);
 
       await FirebaseFirestore.instance
           .collection(patientsCollectionKey)
@@ -90,8 +89,9 @@ class AddDoctorController extends GetxController {
       );
       isLoading = false;
       update();
-//       Get.offAll(() => PatientMainScreen());
-      Navigator.pop(context);
+      Get.offAllNamed(Routes.homeScreen);
+      //  Navigator.pop(context);
+      update();
     }).catchError((error) {
       isLoading = false;
       update();
@@ -109,6 +109,7 @@ class AddDoctorController extends GetxController {
     imageUrl,
     name,
     phoneNumber,
+    isDoctorRequist,
     email,
     specialet,
     collectionKey,
@@ -124,19 +125,20 @@ class AddDoctorController extends GetxController {
         specialization != "Choose Specialization".tr) {
       isLoading = true;
 
-      storage
+      await storage
           .ref()
           .child(
               "$collectionKey/$uid/${Uri.file(identityImageFile!.path).pathSegments.last}")
           .putFile(identityImageFile!)
-          .then((value) {
-        value.ref.getDownloadURL().then((value) async {
+          .then((value) async{
+        await value.ref.getDownloadURL().then((value) async {
           UserModel user = UserModel(
             name,
             uid,
             email,
             phoneNumber,
             false,
+            isDoctorRequist,
             "identityFile",
             bio,
             Timestamp.fromDate(DateTime.now()),
@@ -149,7 +151,7 @@ class AddDoctorController extends GetxController {
             to,
             notes,
           );
-          updateUserInfo(
+          await updateUserInfo(
             user.toJson(),
             uid,
             collectionKey,

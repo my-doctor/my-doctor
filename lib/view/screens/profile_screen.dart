@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mydoctor/routes/routes.dart';
-
+import 'package:badges/badges.dart' as badges;
 import '../../../utils/my_string.dart';
 import '../../controller/controllers/auth_controller.dart';
 import '../../controller/controllers/settings_controller.dart';
@@ -19,7 +19,7 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double h = Get.height;
-    final controller = Get.put(SettingController()) ;
+    final controller = Get.find<SettingController>();
     final authController = Get.put(AuthController());
 
     return Obx(() => Scaffold(
@@ -55,7 +55,8 @@ class SettingScreen extends StatelessWidget {
                                 textDecoration: TextDecoration.none),
                             HeightSizeBox(SizeConfig.defaultSize! * .2),
                             KTextUtils(
-                                text: controller.patientInfoModel.value!.phoneNumber!,
+                                text: controller
+                                    .patientInfoModel.value!.phoneNumber!,
                                 size: 15,
                                 color: grey,
                                 fontWeight: FontWeight.w500,
@@ -157,7 +158,8 @@ class SettingScreen extends StatelessWidget {
                       ),
                       context: context),
                   SizedBox(height: 20),
-                controller.isDoctor()?  buildTextButtonIcon(
+                  controller.isDoctor()
+                      ? buildTextButtonIcon(
                           backColor: mainColor,
                           onPressed: () {
                             Get.toNamed(Routes.addDoctorInfoScreen, arguments: [
@@ -170,7 +172,66 @@ class SettingScreen extends StatelessWidget {
                           iconColor: Colors.white,
                           label: "Switch as a doctor".tr,
                           style: TextStyle(fontSize: 20, color: Colors.black),
-                          context: context):SizedBox(),
+                          context: context)
+                      : controller.patientInfoModel.value!.isDoctorRequist!
+                          ? buildTextButtonIcon(
+                              backColor: mainColor,
+                              onPressed: () {},
+                              icon: Icons.access_time_filled_sharp,
+                              iconColor: Colors.white,
+                              label: "Your Requist under revision".tr,
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                              context: context)
+                          : SizedBox(),
+                  controller.isAdmin() ? SizedBox(height: 20) : SizedBox(),
+                  controller.isAdmin()
+                      ? Container(
+                          alignment: Alignment.topLeft,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).canvasColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextButton.icon(
+                            onPressed: () {
+                              controller.doctorsRequistList.length == 0
+                                  ? Get.snackbar(
+                                      "sorry", "theres no doctor requist")
+                                  : Get.toNamed(
+                                      Routes.doctorSwitchRequistListScreen,
+                                      );
+                            },
+                            icon: Container(
+                                width: SizeConfig.defaultSize! * 2.2,
+                                height: SizeConfig.defaultSize! * 2.2,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: mainColor),
+                                child: badges.Badge(
+                                  stackFit: StackFit.expand,
+                                  badgeContent: Text(
+                                    controller.doctorsRequistList.length
+                                        .toString(),
+                                    style: TextStyle(color: white),
+                                  ),
+                                  child: Icon(
+                                    Icons.notifications_active,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            label: Row(
+                              children: [
+                                Text("Show doctors requist".tr,
+                                    style:
+                                        Theme.of(context).textTheme.headline3),
+                                Spacer(),
+                                SizedBox()
+                              ],
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
                   SizedBox(height: 20),
                   buildTextButtonIcon(
                       onPressed: () {

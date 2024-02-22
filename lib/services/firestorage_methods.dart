@@ -10,27 +10,9 @@ class FireStorageMethods {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  // firebase_storage.FirebaseStorage storage =
-  //     firebase_storage.FirebaseStorage.instance;
 
 
 
-  updateDoctorIdentityStorage(uid, identityFile) {
-    // storage
-    //     .ref()
-    //     .child(
-    //         "$doctorsCollectionKey/$uid/identityFile/${Uri.file(identityFile.path).pathSegments.last}")
-    //     .putFile(identityFile)
-    //     .then((value) {
-    //   value.ref.getDownloadURL().then((value) {
-    //     FireStoreMethods().updateDoctorIdentity(uid, value);
-    //   }).catchError((onError) {
-    //     print(onError);
-    //   });
-    // }).catchError((onError) {
-    //   print(onError);
-    // });
-  }
 
 
 }

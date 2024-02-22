@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
       initialRoute:GetStorage().read("auth") == patientsCollectionKey
           ? Routes.homeScreen
           : GetStorage().read("auth") == doctorsCollectionKey
+          ? Routes.homeScreen : GetStorage().read("auth") == adminCollectionKey
           ? Routes.homeScreen
           :  Routes.loginScreen,
       getPages: AppRoutes.routes,

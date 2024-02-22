@@ -24,6 +24,7 @@ class FireStoreMethods {
       email,
       phoneNumber,
       false,
+      false,
       "identityFile",
       "bio",
       Timestamp.fromDate(DateTime.now()),
@@ -40,19 +41,7 @@ class FireStoreMethods {
     await patients.doc(phoneNumber).set(user.toJson());
   }
 
-  Future<void> insertDoctorInfoFireStorage(String displayName, email, uid,
-      identityFile, phoneNumber, isDoctor, specialet) async {
-    doctors.doc(uid).set({
-      'displayName': displayName,
-      'uid': uid,
-      'email': email,
-      "identityFile": identityFile,
-      "phoneNumber": phoneNumber,
-      "isDoctor": isDoctor,
-      "registerDate": DateTime.now(),
-    });
-    return;
-  }
+
 
   Future<void> addReview({
     required String userId,
