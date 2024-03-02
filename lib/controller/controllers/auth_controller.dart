@@ -8,6 +8,7 @@ import '../../routes/routes.dart';
 import '../../services/firestore_methods.dart';
 import '../../utils/constants.dart';
 import '../../utils/my_string.dart';
+import '../../view/screens/auth/edit_new_password_screen.dart';
 import '../../view/screens/home_screen.dart';
 import '../../view/widgets/auth/pin_put_widget.dart';
 
@@ -15,6 +16,7 @@ class AuthController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   RxBool isLoading = false.obs;
   RxBool isResetPass = false.obs;
+  RxBool isEditNewPass = false.obs;
 
   ////////////////////////////////////////////////
   final GetStorage authBox = GetStorage();
@@ -106,17 +108,27 @@ class AuthController extends GetxController {
     }
   }
 
-  void registerWithPhoneNumber({
-    required String name,
-    required String email,
-    required String password,
+  //////////////////////////////////////////////////////////////////////Reset with firebase///////////////////////////
+
+  void resetPassword({
     required String phoneNumber,
   }) async {
-    try {
-      print(name + email + password + phoneNumber);
-      isLoading.value = true;
-      update();
+    isResetPass.value = true;
+    update();
 
+    final p = await FirebaseFirestore.instance
+        .collection(patientsCollectionKey)
+        .where("phoneNumber", isEqualTo: phoneNumber)
+        .get();
+    final d = await FirebaseFirestore.instance
+        .collection(doctorsCollectionKey)
+        .where("phoneNumber", isEqualTo: phoneNumber)
+        .get();
+    final a = await FirebaseFirestore.instance
+        .collection(adminCollectionKey)
+        .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
+        .get();
+    if (p.docs.isNotEmpty || d.docs.isNotEmpty || a.docs.isNotEmpty) {
       await auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
@@ -124,12 +136,8 @@ class AuthController extends GetxController {
           await auth.signInWithCredential(credential);
           isLoading.value = false;
           update();
-          Get.off(() => PinCodeVerificationScreen(), arguments: [
-            name,
-            email,
-            password,
-            phoneNumber,
-          ]);
+          Get.off(() => PinCodeVerificationScreen(),
+              arguments: ["name", "email", "password", phoneNumber, true]);
         },
         verificationFailed: (FirebaseAuthException e) {
           isLoading.value = false;
@@ -153,12 +161,201 @@ class AuthController extends GetxController {
           update();
 
           // Navigate to the PIN screen to enter the code
-          Get.off(() => PinCodeVerificationScreen(), arguments: [
-            name,
-            email,
-            password,
-            phoneNumber,
-          ]);
+          Get.off(() => PinCodeVerificationScreen(),
+              arguments: ["name", "email", "password", phoneNumber, true]);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Auto-retrieval timeout
+          // You can handle this case if needed
+        },
+      );
+    } else {
+      isResetPass.value = false;
+      Get.snackbar("Error", "try to write correct number this number not exist",
+          snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
+    }
+  }
+
+  void editNewPassword(
+    String phoneNumber,
+    String password,
+  ) async {
+    isEditNewPass.value = true;
+    update();
+
+    final p = await FirebaseFirestore.instance
+        .collection(patientsCollectionKey)
+        .where("phoneNumber", isEqualTo: phoneNumber)
+        .get();
+    final d = await FirebaseFirestore.instance
+        .collection(doctorsCollectionKey)
+        .where("phoneNumber", isEqualTo: phoneNumber)
+        .get();
+    final a = await FirebaseFirestore.instance
+        .collection(adminCollectionKey)
+        .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
+        .get();
+
+    if (p.docs.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(patientsCollectionKey)
+          .doc(phoneNumber)
+          .update({"password": password})
+          .then((value) {
+
+            Get.offAllNamed(Routes.loginScreen);
+          Get.snackbar("Done", "password Changed Successfully");
+          update();
+          })
+          .catchError((onError) {
+            Get.defaultDialog(
+                title: "error",
+                middleText: "$onError",
+                textCancel: "Ok",
+                buttonColor: mainColor2,
+                cancelTextColor: mainColor,
+                backgroundColor: white);
+          });
+      isEditNewPass.value = false;
+    } else if (d.docs.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(doctorsCollectionKey)
+          .doc(phoneNumber)
+          .update({"password": password})
+          .then((value) {
+
+        Get.offAllNamed(Routes.loginScreen);
+        Get.snackbar("Done", "password Changed Successfully");
+        update();
+      })
+          .catchError((onError) {
+            Get.defaultDialog(
+                title: "error",
+                middleText: "$onError",
+                textCancel: "Ok",
+                buttonColor: mainColor2,
+                cancelTextColor: mainColor,
+                backgroundColor: white);
+          });
+      isEditNewPass.value = false;
+    } else if (a.docs.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(adminCollectionKey)
+          .doc(phoneNumber)
+          .update({"password": password})
+          .then((value) {
+
+        Get.offAllNamed(Routes.loginScreen);
+        Get.snackbar("Done", "password Changed Successfully");
+        update();
+      })
+          .catchError((onError) {
+            Get.defaultDialog(
+                title: "error",
+                middleText: "$onError",
+                textCancel: "Ok",
+                buttonColor: mainColor2,
+                cancelTextColor: mainColor,
+                backgroundColor: white);
+          });
+      isEditNewPass.value = false;
+    } else {
+      isEditNewPass.value = false;
+      Get.snackbar(
+          "Error", "try to login again with correct password and number",
+          snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
+    }
+
+//      displayUserId.value = await GetStorage().read("uid");
+
+    update();
+  }
+
+  void checkVerificationCodeForResetPass(
+    String verificationCode,
+    String phoneNumber,
+  ) async {
+    isCheckingPin.value = true;
+    hasError.value = false;
+
+    try {
+      // Create a PhoneAuthCredential object with the verification ID and the entered verification code
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: authBox.read(KVerificationId),
+        smsCode: verificationCode,
+      );
+
+      // Sign in with the credential
+      await auth.signInWithCredential(credential).then((value) async {
+        await authBox.write(KUid, phoneNumber);
+        uid = value.user!.uid;
+
+        isCheckingPin.value = false;
+        Get.off(() => EditNewPasswordScreen(), arguments: [phoneNumber]);
+        update();
+      });
+
+      // Navigate to the desired screen
+    } catch (error) {
+      isCheckingPin.value = false;
+      hasError.value = true;
+      // Handle verification failure
+      Get.snackbar(
+        "Verification Failed",
+        error.toString(),
+        snackPosition: SnackPosition.TOP,
+      );
+      print(error);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////register with firebase///////////////////////////
+
+  void registerWithPhoneNumber({
+    required String name,
+    required String email,
+    required String password,
+    required String phoneNumber,
+  }) async {
+    try {
+      print(name + email + password + phoneNumber);
+      isLoading.value = true;
+      update();
+
+      await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Automatically sign in after verification
+          await auth.signInWithCredential(credential);
+          isLoading.value = false;
+          update();
+          Get.off(() => PinCodeVerificationScreen(),
+              arguments: [name, email, password, phoneNumber, false]);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          isLoading.value = false;
+          update();
+
+          Get.snackbar(
+            "Verification Failed",
+            e.message!,
+            snackPosition: SnackPosition.TOP,
+          );
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          // Save the verification ID for later use
+          Get.snackbar(
+            "code sent",
+            "Verification code sent to ur number",
+            snackPosition: SnackPosition.TOP,
+          );
+          authBox.write(KVerificationId, verificationId);
+          isLoading.value = false;
+          update();
+
+          // Navigate to the PIN screen to enter the code
+          Get.off(() => PinCodeVerificationScreen(),
+              arguments: [name, email, password, phoneNumber, false]);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           // Auto-retrieval timeout
@@ -178,73 +375,6 @@ class AuthController extends GetxController {
     }
   }
 
-  void patientSignUpUsingFirebase({
-    required String name,
-    required String email,
-    required String password,
-    required String phoneNumber,
-  }) async {
-    try {
-      isLoading.value = true;
-      await auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) async {
-        await authBox.write(KUid, value.user!.uid);
-        uid = value.user!.uid;
-
-        auth.currentUser!.updateDisplayName(name);
-
-        update();
-        await FireStoreMethods()
-            .insertPatientInfoFireStorage(
-                name, email, uid, phoneNumber, password)
-            .then((a) async {
-          authBox.write(KUid, uid);
-        }).then((v) {
-          isLoading.value = false;
-          update();
-          authBox.write("auth", patientsCollectionKey);
-
-          Get.offNamed(Routes.homeScreen);
-          update();
-        });
-      });
-    } on FirebaseAuthException catch (error) {
-      isLoading.value = false;
-      update();
-
-      String title = error.code.toString().replaceAll(RegExp('-'), ' ');
-      String message = "";
-      if (error.code == 'weak-password') {
-        message = "password is too weak.";
-        title = error.code.toString();
-
-        print('The password provided is too weak.');
-      } else if (error.code == 'email-already-in-use') {
-        message = "account already exists ";
-
-        print('The account already exists for that email.');
-      } else {
-        message = error.message.toString();
-      }
-
-      Get.defaultDialog(
-          title: title,
-          middleText: message,
-          textCancel: "Ok",
-          buttonColor: mainColor2,
-          cancelTextColor: mainColor,
-          backgroundColor: white);
-    } catch (error) {
-      Get.snackbar(
-        "Error",
-        "$error",
-        snackPosition: SnackPosition.TOP,
-      );
-      print(error);
-    }
-  }
-
   //////////////////////////////////////////////////////////////////////login with firebase///////////////////////////
 
   void loginUsingFirebase({
@@ -258,17 +388,17 @@ class AuthController extends GetxController {
       final p = await FirebaseFirestore.instance
           .collection(patientsCollectionKey)
           .where("password", isEqualTo: password)
-          .where("phoneNumber",isEqualTo: phoneNumber)
+          .where("phoneNumber", isEqualTo: phoneNumber)
           .get();
       final d = await FirebaseFirestore.instance
           .collection(doctorsCollectionKey)
-
           .where("password", isEqualTo: password)
-          .where("phoneNumber",isEqualTo: phoneNumber)  .get();
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get();
       final a = await FirebaseFirestore.instance
           .collection(adminCollectionKey)
           .where("password", isEqualTo: password)
-          .where("phoneNumber",isEqualTo: phoneNumber) // varuId in your case
+          .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
           .get();
       authBox.write(KUid, phoneNumber);
       if (p.docs.isNotEmpty) {
@@ -281,15 +411,16 @@ class AuthController extends GetxController {
         isLoading.value = false;
       } else if (a.docs.isNotEmpty) {
         Get.offNamed(Routes.homeScreen);
-        authBox.write("auth", adminCollectionKey);
+        authBox.write("auth", adminCollectionKey); //
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        Get.snackbar("Error", "try to login again with correct password and number",
+        Get.snackbar(
+            "Error", "try to login again with correct password and number",
             snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
       }
       update();
-
+//7750616684
       update();
 
 //      displayUserId.value = await GetStorage().read("uid");
@@ -328,55 +459,6 @@ class AuthController extends GetxController {
   }
 
   //////////////////////////////////////////////////////////////////////reset  ///////////////////////////
-
-  void resetPassWord(String email) async {
-    try {
-      isResetPass.value = true;
-      update();
-      await auth.sendPasswordResetEmail(email: email);
-      update();
-
-      Get.back();
-      isResetPass.value = false;
-
-      Get.defaultDialog(
-          title: "Reset Password",
-          middleText: "check your gmail messages",
-          textCancel: "Ok",
-          buttonColor: mainColor,
-          cancelTextColor: mainColor2,
-          backgroundColor: white);
-    } on FirebaseAuthException catch (error) {
-      isResetPass.value = false;
-
-      String title = error.code.toString().replaceAll(RegExp('-'), ' ');
-      String message = "";
-      if (error.code == 'user-not-found') {
-        message =
-            "Account does not exists for that $email.. Create your account by signing up..";
-      } else {
-        message = error.message.toString();
-      }
-      Get.defaultDialog(
-          title: title,
-          middleText: message,
-          textCancel: "Ok",
-          buttonColor: mainColor,
-          cancelTextColor: mainColor2,
-          backgroundColor: white);
-    } catch (error) {
-      isResetPass.value = false;
-
-      Get.defaultDialog(
-          title: "Error",
-          middleText: "$error",
-          textCancel: "Ok",
-          buttonColor: mainColor,
-          cancelTextColor: mainColor2,
-          backgroundColor: white);
-      print(error);
-    }
-  }
 
   ////////////////////////////////signOut//////////////////////////////////////
   void signOutFromApp() async {

@@ -1,24 +1,23 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mydoctor/utils/constants.dart';
-import 'package:mydoctor/utils/my_string.dart';
-import 'package:mydoctor/utils/size_config.dart';
-import 'package:mydoctor/view/widgets/auth/auth_button.dart';
-import 'package:mydoctor/view/widgets/utils_widgets/icon_botton_utils.dart';
-import 'package:mydoctor/view/widgets/on_boarding_widgets/app_icon_and_name.dart';
-import 'package:mydoctor/view/widgets/utils_widgets/text_utils.dart';
 
 import '../../../controller/controllers/auth_controller.dart';
+import '../../../utils/constants.dart';
+import '../../../utils/my_string.dart';
+import '../../../utils/size_config.dart';
+import '../../widgets/auth/auth_button.dart';
 import '../../widgets/auth/auth_text_from_field.dart';
+import '../../widgets/on_boarding_widgets/app_icon_and_name.dart';
+import '../../widgets/utils_widgets/icon_botton_utils.dart';
+import '../../widgets/utils_widgets/text_utils.dart';
 
-class ForgotPassword extends StatelessWidget {
+class EditNewPasswordScreen extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
-   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final controller = Get.find<AuthController>();
-  final TextEditingController phoneController = TextEditingController();
-
-  ForgotPassword({Key? key}) : super(key: key);
+  String phoneNum = Get.arguments[0];
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -107,48 +106,75 @@ class ForgotPassword extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           textDecoration: TextDecoration.none,
                         ),
-                        const SizedBox(
-                          height: 30,
-                        ),
                         GetBuilder<AuthController>(
                           builder: (_) {
-                            return Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: AuthTextFromField(
-                                prefixIcon: CountryCodePicker(
-                                  flagWidth: Get.width * .05,
-                                  onChanged: (code) {
-                                    controller
-                                        .updateCountryCode(code.dialCode!);
-                                  },
-                                  initialSelection: 'IQ',
-                                  // Set your initial country here
-                                  textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                suffixIcon: SizedBox(),
-                                controller: phoneController,
-                                obscureText: false,
-                                validator: (value) {
-                                  if (value.length == 0) {
-                                    return 'Please enter mobile number'.tr;
-                                  } else if (!RegExp(validationPhone)
-                                      .hasMatch(value)) {
-                                    return 'Please enter valid mobile number'
-                                        .tr;
-                                  }
-                                  return null;
-                                },
-                                hintText: 'xxx xxx xxxx',
-                                textInputType: TextInputType.phone,
+                            return AuthTextFromField(
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: white,
                               ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.visibility();
+                                },
+                                icon: controller.isVisibilty
+                                    ? Icon(Icons.visibility_off)
+                                    : Icon(Icons.visibility),
+                                color: mainColor3,
+                              ),
+                              controller: passwordController,
+                              obscureText:
+                                  controller.isVisibilty ? false : true,
+                              validator: (value) {
+                                if (value.toString().length < 6) {
+                                  return "Password is too short".tr;
+                                } else {
+                                  return null;
+                                }
+                              },
+                              hintText: 'Password'.tr,
+                              textInputType: TextInputType.visiblePassword,
                             );
                           },
                         ),
-                        const SizedBox(
-                          height: 15,
+                        SizedBox(
+                          height: 10,
+                        ),
+
+                        //password
+                        GetBuilder<AuthController>(
+                          builder: (_) {
+                            return AuthTextFromField(
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: white,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.visibility2();
+                                },
+                                icon: controller.isVisibilty2
+                                    ? Icon(Icons.visibility_off)
+                                    : Icon(Icons.visibility),
+                                color: mainColor3,
+                              ),
+                              controller: confirmPasswordController,
+                              obscureText:
+                                  controller.isVisibilty2 ? false : true,
+                              validator: (value) {
+                                if (confirmPasswordController.text.toString() !=
+                                    passwordController.text.toString()) {
+                                  return "The passwords must be identical".tr;
+                                } else if (value.toString().length < 6) {
+                                  return "Password is too short".tr;
+                                } else {
+                                  return null;
+                                }
+                              },
+                              hintText: 'confirm password'.tr,
+                              textInputType: TextInputType.visiblePassword,
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -165,14 +191,13 @@ class ForgotPassword extends StatelessWidget {
                       return AuthButton(
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
-                              String phoneNumber =
-                                  controller.countryCode.value +
-                                      phoneController.text;
-                              controller.resetPassword(
-                                  phoneNumber: phoneNumber);
+                              controller.editNewPassword(
+                                phoneNum,
+                                passwordController.text,
+                              );
                             }
                           },
-                          text: controller.isResetPass.value == false
+                          text: controller.isEditNewPass.value == false
                               ? Text(
                                   "Reset".tr,
                                   style: TextStyle(

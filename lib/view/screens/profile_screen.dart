@@ -43,16 +43,18 @@ class SettingScreen extends StatelessWidget {
                               width: SizeConfig.defaultSize! * 5,
                             ),
                             HeightSizeBox(SizeConfig.defaultSize! * .7),
-                            KTextUtils(
-                                text: controller
-                                    .patientInfoModel.value!.displayName!,
-                                size: 22,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .color!,
-                                fontWeight: FontWeight.w700,
-                                textDecoration: TextDecoration.none),
+                           !controller.isDoctor() || controller.isAdmin()
+                                ? KTextUtils(
+                                    text: controller
+                                        .patientInfoModel.value!.displayName!,
+                                    size: 22,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline2!
+                                        .color!,
+                                    fontWeight: FontWeight.w700,
+                                    textDecoration: TextDecoration.none)
+                                : SizedBox(),
                             HeightSizeBox(SizeConfig.defaultSize! * .2),
                             KTextUtils(
                                 text: controller
@@ -200,7 +202,7 @@ class SettingScreen extends StatelessWidget {
                                       "sorry", "theres no doctor requist")
                                   : Get.toNamed(
                                       Routes.doctorSwitchRequistListScreen,
-                                      );
+                                    );
                             },
                             icon: Container(
                                 width: SizeConfig.defaultSize! * 2.2,

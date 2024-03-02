@@ -67,7 +67,7 @@ class LoginScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         KTextUtils(
-                          text: "Login",
+                          text: "Login".tr,
                           size: 30,
                           color: const Color(0xffffffff),
                           fontWeight: FontWeight.bold,
@@ -78,33 +78,36 @@ class LoginScreen extends StatelessWidget {
                         ),
                         GetBuilder<AuthController>(
                           builder: (_) {
-                            return AuthTextFromField(
-                              prefixIcon: CountryCodePicker(
-                                flagWidth: Get.width * .05,
-                                onChanged: (code) {
-                                  controller.updateCountryCode(code.dialCode!);
-                                },
-                                initialSelection: 'IQ',
-                                // Set your initial country here
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                            return Directionality(
+                              textDirection: TextDirection.ltr,
+                              child: AuthTextFromField(
+                                prefixIcon: CountryCodePicker(
+                                  flagWidth: Get.width * .05,
+                                  onChanged: (code) {
+                                    controller.updateCountryCode(code.dialCode!);
+                                  },
+                                  initialSelection: 'IQ',
+                                  // Set your initial country here
+                                  textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
                                 ),
+                                suffixIcon: SizedBox(),
+                                controller: phoneController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value.length == 0) {
+                                    return 'Please enter mobile number'.tr;
+                                  } else if (!RegExp(validationPhone)
+                                      .hasMatch(value)) {
+                                    return 'Please enter valid mobile number'.tr;
+                                  }
+                                  return null;
+                                },
+                                hintText: 'xxx xxx xxxx',
+                                textInputType: TextInputType.phone,
                               ),
-                              suffixIcon: SizedBox(),
-                              controller: phoneController,
-                              obscureText: false,
-                              validator: (value) {
-                                if (value.length == 0) {
-                                  return 'Please enter mobile number';
-                                } else if (!RegExp(validationPhone)
-                                    .hasMatch(value)) {
-                                  return 'Please enter valid mobile number';
-                                }
-                                return null;
-                              },
-                              hintText: 'xxx xxx xxxx',
-                              textInputType: TextInputType.phone,
                             );
                           },
                         ),
@@ -132,12 +135,12 @@ class LoginScreen extends StatelessWidget {
                                   controller.isVisibilty ? false : true,
                               validator: (value) {
                                 if (value.toString().length < 6) {
-                                  return "Password is too short";
+                                  return "Password is too short".tr;
                                 } else {
                                   return null;
                                 }
                               },
-                              hintText: 'Password',
+                              hintText: 'Password'.tr,
                               textInputType: TextInputType.visiblePassword,
                             );
                           },
@@ -150,7 +153,7 @@ class LoginScreen extends StatelessWidget {
                                   Get.toNamed(Routes.forgotPassword);
                                 },
                                 child: KTextUtils(
-                                  text: "Forget Password",
+                                  text: "Forget Password".tr,
                                   size: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -179,7 +182,7 @@ class LoginScreen extends StatelessWidget {
                                 },
                                 text: controller.isLoading == false
                                     ? Text(
-                                        "Login",
+                                        "Login".tr,
                                         style: TextStyle(
                                             fontSize: 22,
                                             color: Colors.black,
@@ -202,7 +205,7 @@ class LoginScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             KTextUtils(
-                              text: "Don’t have an account?",
+                              text: "Don’t have an account?".tr,
                               size: 18,
                               color: Colors.black87,
                               fontWeight: FontWeight.w500,
@@ -213,7 +216,7 @@ class LoginScreen extends StatelessWidget {
                                   Get.toNamed(Routes.patientRegisterScreen);
                                 },
                                 child: KTextUtils(
-                                  text: "SignUp",
+                                  text: "SignUp".tr,
                                   size: 18,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,

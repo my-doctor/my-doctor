@@ -65,7 +65,7 @@ class PatientRegisterScreen extends StatelessWidget {
                           Get.back();
                         }),
                     KTextUtils(
-                      text: "Register",
+                      text: "Register".tr,
                       size: 30,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -109,27 +109,27 @@ class PatientRegisterScreen extends StatelessWidget {
                       SizedBox(
                         height: Get.height * .1,
                       ),
-                      AuthTextFromField(
-                        prefixIcon: Icon(
-                          Icons.account_circle_outlined,
-                          color: white,
-                        ),
-                        suffixIcon: Text(""),
-                        controller: nameController,
-                        obscureText: false,
-                        validator: (value) {
-                          if (value.length == 0) {
-                            return 'Please enter name';
-                          } else if (value.toString().length <= 2 ||
-                              !RegExp(validationName).hasMatch(value)) {
-                            return "Enter valid name";
-                          } else {
-                            return null;
-                          }
-                        },
-                        hintText: "Full Name",
-                        textInputType: TextInputType.name,
-                      ),
+                      // AuthTextFromField(
+                      //   prefixIcon: Icon(
+                      //     Icons.account_circle_outlined,
+                      //     color: white,
+                      //   ),
+                      //   suffixIcon: Text(""),
+                      //   controller: nameController,
+                      //   obscureText: false,
+                      //   validator: (value) {
+                      //     if (value.length == 0) {
+                      //       return 'Please enter name'.tr;
+                      //     } else if (value.toString().length <= 2 ||
+                      //         !RegExp(validationName).hasMatch(value)) {
+                      //       return "Enter valid name".tr;
+                      //     } else {
+                      //       return null;
+                      //     }
+                      //   },
+                      //   hintText: "Full Name".tr,
+                      //   textInputType: TextInputType.name,
+                      // ),
                       SizedBox(
                         height: 10,
                       ),
@@ -137,33 +137,36 @@ class PatientRegisterScreen extends StatelessWidget {
                       //Phone number
                       GetBuilder<AuthController>(
                         builder: (_) {
-                          return AuthTextFromField(
-                            prefixIcon: CountryCodePicker(
-                              flagWidth: Get.width * .05,
-                              onChanged: (code) {
-                                controller.updateCountryCode(code.dialCode!);
-                              },
-                              initialSelection: 'IQ',
-                              // Set your initial country here
-                              textStyle: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
+                          return Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: AuthTextFromField(
+                              prefixIcon: CountryCodePicker(
+                                flagWidth: Get.width * .05,
+                                onChanged: (code) {
+                                  controller.updateCountryCode(code.dialCode!);
+                                },
+                                initialSelection: 'IQ',
+                                // Set your initial country here
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                               ),
+                              suffixIcon: SizedBox(),
+                              controller: phoneController,
+                              obscureText: false,
+                              validator: (value) {
+                                if (value.length == 0) {
+                                  return 'Please enter mobile number'.tr;
+                                } else if (!RegExp(validationPhone)
+                                    .hasMatch(value)) {
+                                  return 'Please enter valid mobile number'.tr;
+                                }
+                                return null;
+                              },
+                              hintText: 'xxx xxx xxxx',
+                              textInputType: TextInputType.phone,
                             ),
-                            suffixIcon: SizedBox(),
-                            controller: phoneController,
-                            obscureText: false,
-                            validator: (value) {
-                              if (value.length == 0) {
-                                return 'Please enter mobile number';
-                              } else if (!RegExp(validationPhone)
-                                  .hasMatch(value)) {
-                                return 'Please enter valid mobile number';
-                              }
-                              return null;
-                            },
-                            hintText: 'xxx xxx xxxx',
-                            textInputType: TextInputType.phone,
                           );
                         },
                       ),
@@ -216,12 +219,12 @@ class PatientRegisterScreen extends StatelessWidget {
                             obscureText: controller.isVisibilty ? false : true,
                             validator: (value) {
                               if (value.toString().length < 6) {
-                                return "Password is too short";
+                                return "Password is too short".tr;
                               } else {
                                 return null;
                               }
                             },
-                            hintText: 'Password',
+                            hintText: 'Password'.tr,
                             textInputType: TextInputType.visiblePassword,
                           );
                         },
@@ -252,14 +255,14 @@ class PatientRegisterScreen extends StatelessWidget {
                             validator: (value) {
                               if (confirmPasswordController.text.toString() !=
                                   passwordController.text.toString()) {
-                                return "The passwords must be identical";
+                                return "The passwords must be identical".tr;
                               } else if (value.toString().length < 6) {
-                                return "Password is too short";
+                                return "Password is too short".tr;
                               } else {
                                 return null;
                               }
                             },
-                            hintText: 'confirm password',
+                            hintText: 'confirm password'.tr,
                             textInputType: TextInputType.visiblePassword,
                           );
                         },
@@ -275,7 +278,7 @@ class PatientRegisterScreen extends StatelessWidget {
                           return AuthButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
-                                  String name = nameController.text;
+                                  String name = "User name";
 
                                   String email = "email@e.com";
                                   String password = passwordController.text;
@@ -292,7 +295,7 @@ class PatientRegisterScreen extends StatelessWidget {
                               },
                               text: controller.isLoading.value == false
                                   ? Text(
-                                      "Sign Up",
+                                      "Sign Up".tr,
                                       style: TextStyle(
                                           fontSize: 22,
                                           color: Colors.black,
