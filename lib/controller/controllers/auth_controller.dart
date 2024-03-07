@@ -129,46 +129,46 @@ class AuthController extends GetxController {
         .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
         .get();
     if (p.docs.isNotEmpty || d.docs.isNotEmpty || a.docs.isNotEmpty) {
-      await auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          // Automatically sign in after verification
-          await auth.signInWithCredential(credential);
-          isLoading.value = false;
-          update();
-          Get.off(() => PinCodeVerificationScreen(),
-              arguments: ["name", "email", "password", phoneNumber, true]);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          isLoading.value = false;
-          update();
-
-          Get.snackbar(
-            "Verification Failed",
-            e.message!,
-            snackPosition: SnackPosition.TOP,
-          );
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          // Save the verification ID for later use
-          Get.snackbar(
-            "code sent",
-            "Verification code sent to ur number",
-            snackPosition: SnackPosition.TOP,
-          );
-          authBox.write(KVerificationId, verificationId);
-          isLoading.value = false;
-          update();
-
-          // Navigate to the PIN screen to enter the code
-          Get.off(() => PinCodeVerificationScreen(),
-              arguments: ["name", "email", "password", phoneNumber, true]);
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          // Auto-retrieval timeout
-          // You can handle this case if needed
-        },
-      );
+      // await auth.verifyPhoneNumber(
+      //   phoneNumber: phoneNumber,
+      //   verificationCompleted: (PhoneAuthCredential credential) async {
+      //     // Automatically sign in after verification
+      //     await auth.signInWithCredential(credential);
+      //     isLoading.value = false;
+      //     update();
+      //     Get.off(() => PinCodeVerificationScreen(),
+      //         arguments: ["name", "email", "password", phoneNumber, true]);
+      //   },
+      //   verificationFailed: (FirebaseAuthException e) {
+      //     isLoading.value = false;
+      //     update();
+      //
+      //     Get.snackbar(
+      //       "Verification Failed",
+      //       e.message!,
+      //       snackPosition: SnackPosition.TOP,
+      //     );
+      //   },
+      //   codeSent: (String verificationId, int? resendToken) {
+      //     // Save the verification ID for later use
+      //     Get.snackbar(
+      //       "code sent",
+      //       "Verification code sent to ur number",
+      //       snackPosition: SnackPosition.TOP,
+      //     );
+      //     authBox.write(KVerificationId, verificationId);
+      //     isLoading.value = false;
+      //     update();
+      //
+      //     // Navigate to the PIN screen to enter the code
+      //     Get.off(() => PinCodeVerificationScreen(),
+      //         arguments: ["name", "email", "password", phoneNumber, true]);
+      //   },
+      //   codeAutoRetrievalTimeout: (String verificationId) {
+      //     // Auto-retrieval timeout
+      //     // You can handle this case if needed
+      //   },
+      // );
     } else {
       isResetPass.value = false;
       Get.snackbar("Error", "try to write correct number this number not exist",
@@ -200,64 +200,55 @@ class AuthController extends GetxController {
       await FirebaseFirestore.instance
           .collection(patientsCollectionKey)
           .doc(phoneNumber)
-          .update({"password": password})
-          .then((value) {
-
-            Get.offAllNamed(Routes.loginScreen);
-          Get.snackbar("Done", "password Changed Successfully");
-          update();
-          })
-          .catchError((onError) {
-            Get.defaultDialog(
-                title: "error",
-                middleText: "$onError",
-                textCancel: "Ok",
-                buttonColor: mainColor2,
-                cancelTextColor: mainColor,
-                backgroundColor: white);
-          });
+          .update({"password": password}).then((value) {
+        Get.offAllNamed(Routes.loginScreen);
+        Get.snackbar("Done", "password Changed Successfully");
+        update();
+      }).catchError((onError) {
+        Get.defaultDialog(
+            title: "error",
+            middleText: "$onError",
+            textCancel: "Ok",
+            buttonColor: mainColor2,
+            cancelTextColor: mainColor,
+            backgroundColor: white);
+      });
       isEditNewPass.value = false;
     } else if (d.docs.isNotEmpty) {
       await FirebaseFirestore.instance
           .collection(doctorsCollectionKey)
           .doc(phoneNumber)
-          .update({"password": password})
-          .then((value) {
-
+          .update({"password": password}).then((value) {
         Get.offAllNamed(Routes.loginScreen);
         Get.snackbar("Done", "password Changed Successfully");
         update();
-      })
-          .catchError((onError) {
-            Get.defaultDialog(
-                title: "error",
-                middleText: "$onError",
-                textCancel: "Ok",
-                buttonColor: mainColor2,
-                cancelTextColor: mainColor,
-                backgroundColor: white);
-          });
+      }).catchError((onError) {
+        Get.defaultDialog(
+            title: "error",
+            middleText: "$onError",
+            textCancel: "Ok",
+            buttonColor: mainColor2,
+            cancelTextColor: mainColor,
+            backgroundColor: white);
+      });
       isEditNewPass.value = false;
     } else if (a.docs.isNotEmpty) {
       await FirebaseFirestore.instance
           .collection(adminCollectionKey)
           .doc(phoneNumber)
-          .update({"password": password})
-          .then((value) {
-
+          .update({"password": password}).then((value) {
         Get.offAllNamed(Routes.loginScreen);
         Get.snackbar("Done", "password Changed Successfully");
         update();
-      })
-          .catchError((onError) {
-            Get.defaultDialog(
-                title: "error",
-                middleText: "$onError",
-                textCancel: "Ok",
-                buttonColor: mainColor2,
-                cancelTextColor: mainColor,
-                backgroundColor: white);
-          });
+      }).catchError((onError) {
+        Get.defaultDialog(
+            title: "error",
+            middleText: "$onError",
+            textCancel: "Ok",
+            buttonColor: mainColor2,
+            cancelTextColor: mainColor,
+            backgroundColor: white);
+      });
       isEditNewPass.value = false;
     } else {
       isEditNewPass.value = false;
@@ -321,47 +312,40 @@ class AuthController extends GetxController {
       print(name + email + password + phoneNumber);
       isLoading.value = true;
       update();
+      await authBox.write(KUid, phoneNumber);
+      final p = await FirebaseFirestore.instance
+          .collection(patientsCollectionKey)
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get();
+      final d = await FirebaseFirestore.instance
+          .collection(doctorsCollectionKey)
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get();
+      final a = await FirebaseFirestore.instance
+          .collection(adminCollectionKey)
+          .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
+          .get();
 
-      await auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          // Automatically sign in after verification
-          await auth.signInWithCredential(credential);
+      if (p.docs.isEmpty && d.docs.isEmpty && a.docs.isEmpty) {
+        isLoading.value = false;
+        update();
+        await FireStoreMethods()
+            .insertPatientInfoFireStorage(
+                name, email, phoneNumber, phoneNumber, password)
+            .then((a) async {
+          authBox.write(KUid, phoneNumber);
           isLoading.value = false;
           update();
-          Get.off(() => PinCodeVerificationScreen(),
-              arguments: [name, email, password, phoneNumber, false]);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          isLoading.value = false;
-          update();
+          authBox.write("auth", patientsCollectionKey);
+          Get.offNamed(Routes.homeScreen);
+          authBox.write("auth", patientsCollectionKey);
 
-          Get.snackbar(
-            "Verification Failed",
-            e.message!,
-            snackPosition: SnackPosition.TOP,
-          );
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          // Save the verification ID for later use
-          Get.snackbar(
-            "code sent",
-            "Verification code sent to ur number",
-            snackPosition: SnackPosition.TOP,
-          );
-          authBox.write(KVerificationId, verificationId);
-          isLoading.value = false;
+          Get.offNamed(Routes.homeScreen);
           update();
-
-          // Navigate to the PIN screen to enter the code
-          Get.off(() => PinCodeVerificationScreen(),
-              arguments: [name, email, password, phoneNumber, false]);
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          // Auto-retrieval timeout
-          // You can handle this case if needed
-        },
-      );
+        })   ;
+      } else {   isLoading.value = false;
+        Get.snackbar("خطا", "رقم الهاتف مستخدم سابقا");
+      }
     } catch (error) {
       isLoading.value = false;
       update();
