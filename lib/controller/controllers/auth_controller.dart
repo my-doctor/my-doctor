@@ -125,48 +125,12 @@ class AuthController extends GetxController {
         .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
         .get();
     if (p.docs.isNotEmpty || d.docs.isNotEmpty || a.docs.isNotEmpty) {
-      // await auth.verifyPhoneNumber(
-      //   phoneNumber: phoneNumber,
-      //   verificationCompleted: (PhoneAuthCredential credential) async {
-      //     // Automatically sign in after verification
-      //     await auth.signInWithCredential(credential);
-      //     isLoading.value = false;
-      //     update();
-      //     Get.off(() => PinCodeVerificationScreen(),
-      //         arguments: ["name", "email", "password", phoneNumber, true]);
-      //   },
-      //   verificationFailed: (FirebaseAuthException e) {
-      //     isLoading.value = false;
-      //     update();
-      //
-      //     Get.snackbar(
-      //       "Verification Failed",
-      //       e.message!,
-      //       snackPosition: SnackPosition.TOP,
-      //     );
-      //   },
-      //   codeSent: (String verificationId, int? resendToken) {
-      //     // Save the verification ID for later use
-      //     Get.snackbar(
-      //       "code sent",
-      //       "Verification code sent to ur number",
-      //       snackPosition: SnackPosition.TOP,
-      //     );
-      //     authBox.write(KVerificationId, verificationId);
-      //     isLoading.value = false;
-      //     update();
-      //
-      //     // Navigate to the PIN screen to enter the code
-      //     Get.off(() => PinCodeVerificationScreen(),
-      //         arguments: ["name", "email", "password", phoneNumber, true]);
-      //   },
-      //   codeAutoRetrievalTimeout: (String verificationId) {
-      //     // Auto-retrieval timeout
-      //     // You can handle this case if needed
-      //   },
-      // );
-    } else {
+      Get.off(() => EditNewPasswordScreen(),
+               arguments: [  phoneNumber, ]);
       isResetPass.value = false;
+      update();   } else {
+      isResetPass.value = false;
+      update();
       Get.snackbar("Error", "try to write correct number this number not exist",
           snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
     }
