@@ -360,8 +360,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
                                                 ///todo:add check on day not to be null
                                                 notesController.text)
                                             .then((value) {
-                                          cc.updateUserEmail(
-                                              emailController.text);
+
                                         });
                                       } else {
                                         Get.snackbar(

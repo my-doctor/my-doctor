@@ -9,8 +9,6 @@ import '../../services/firestore_methods.dart';
 import '../../utils/constants.dart';
 import '../../utils/my_string.dart';
 import '../../view/screens/auth/edit_new_password_screen.dart';
-import '../../view/screens/home_screen.dart';
-import '../../view/widgets/auth/pin_put_widget.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -41,9 +39,7 @@ class AuthController extends GetxController {
   }
 
 //////////////////////////////////ال sign up patient//////////////////////////////////////////////////////////////////////////
-  updateUserEmail(String email) async {
-    await auth.currentUser!.updateEmail(email);
-  }
+
 
   RxString countryCode = "+964".obs;
 

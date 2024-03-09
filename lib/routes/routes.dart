@@ -25,10 +25,10 @@ class AppRoutes {
         name: Routes.OnBoardingScreen,
         page: () => OnBoardingScreen(),
         binding: SplashBinding()),
-    GetPage(
-      name: Routes.confirmOtpScreen,
-      page: () => PinCodeVerificationScreen(),
-    ),
+    // GetPage(
+    //   name: Routes.confirmOtpScreen,
+    //   page: () => PinCodeVerificationScreen(),
+    // ),
     GetPage(
         name: Routes.forgotPassword,
         page: () => ForgotPassword(),
