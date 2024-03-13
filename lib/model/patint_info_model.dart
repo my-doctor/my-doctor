@@ -4,6 +4,7 @@ class UserModel {
   String? displayName;
   String? email;
   String? phoneNumber;
+  String? clinicPhoneNum;
   String? identityFile;
   String? bio;
   Timestamp? registerDate;
@@ -25,6 +26,7 @@ class UserModel {
     this.uid,
     this.email,
     this.phoneNumber,
+    this.clinicPhoneNum,
     this.isDoctor,
     this.isDoctorRequist,
     this.identityFile,
@@ -46,6 +48,7 @@ class UserModel {
       map['uid'],
       map['email'],
       map['phoneNumber'],
+      map['clinicPhoneNum'],
       map['isDoctor'],
       map['isDoctorRequist'],
       map['identityFile'],
@@ -67,6 +70,7 @@ class UserModel {
       'displayName': displayName,
       'email': email,
       'phoneNumber': phoneNumber,
+      'clinicPhoneNum': clinicPhoneNum,
       'identityFile': identityFile,
       'bio': bio,
       'registerDate': registerDate,

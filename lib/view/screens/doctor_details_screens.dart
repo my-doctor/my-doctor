@@ -12,16 +12,42 @@ import '../widgets/home_widgets/circule_image_avatar.dart';
 import '../widgets/home_widgets/reviews_and_sissions_widget.dart';
 import '../widgets/utils_widgets/height_size_box.dart';
 
-class DoctorsDetailsScreen extends StatelessWidget {
+class DoctorsDetailsScreen extends StatefulWidget {
   DoctorsDetailsScreen({super.key});
 
+  @override
+  State<DoctorsDetailsScreen> createState() => _DoctorsDetailsScreenState();
+}
+
+class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
+    with SingleTickerProviderStateMixin {
   String uid = Get.arguments[0];
+
   String imageUrlW = Get.arguments[1];
+
   String name = Get.arguments[2];
+
   String description = Get.arguments[3];
+
   UserModel doctorInfo = Get.arguments[4];
+
   TextEditingController commentController = TextEditingController();
+
   final homeController = Get.put(HomeScreenController());
+
+  late TabController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +99,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
                                   height: Get.width * .25,
                                   width: Get.width * .25,
                                   child: CirculeImageAvatar(
-                                    imageUrl: doctorInfo.profileUrl!??"",
+                                    imageUrl: doctorInfo.profileUrl! ?? "",
                                     width: SizeConfig.defaultSize! * 4,
                                   )),
                               Column(
@@ -102,9 +128,31 @@ class DoctorsDetailsScreen extends StatelessWidget {
                             ),
                           ),
                           HeightSizeBox(Get.height * .004),
-                          GetX<HomeScreenController>(builder: (_) {return ReviewsAndSissions(
-                            numOfReviews: homeController.doctorReviewsList.length??0,
-                          );  },),
+
+                          GetX<HomeScreenController>(
+                            builder: (_) {
+                              return ReviewsAndSissions(
+                                numOfReviews:
+                                    homeController.doctorReviewsList.length ??
+                                        0,
+                                f1: () {
+                                  setState(() {
+
+                                      scrollController.animateTo(0);
+
+                                  });
+                                },
+                                f2: () {
+                                  print("f1 is done");
+                                  setState(() {
+
+                                      scrollController.animateTo(1);
+
+                                  });
+                                },
+                              );
+                            },
+                          ),
                           HeightSizeBox(Get.height * .015),
                         ],
                       ),
@@ -117,9 +165,7 @@ class DoctorsDetailsScreen extends StatelessWidget {
               initState: (_) =>
                   homeController.getDoctorReviews(doctorInfo.phoneNumber!),
               builder: (_) {
-                return TabBarView(
-
-                    children: [
+                return TabBarView(controller: scrollController, children: [
                   _buildDoctorInfoTab(context),
                   Container(
                     padding: EdgeInsets.all(8),
@@ -229,132 +275,140 @@ class DoctorsDetailsScreen extends StatelessWidget {
       ),
 
       ///                  here the floating action button to add the functionality for(adding review)
-      floatingActionButton:homeController.authBox.read("auth")==doctorsCollectionKey?SizedBox(): GestureDetector(
-        onTap: () {
-          Get.defaultDialog(
-              title: "add review",
-              content: GetX<HomeScreenController>(
-                builder: (_) {
-                  return Container(
-                    width: Get.width * .8,
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        TextFormField(
-                          controller: commentController,
-                          decoration: InputDecoration(
-                            hintText: 'Write your review here...',
-                            border: OutlineInputBorder(),
-                          ),
-                          maxLines: 3,
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            5,
-                            (index) => IconButton(
-                              onPressed: () {
-                                homeController.updateRateValue(index + 1);
-                              },
-                              icon: Icon(
-                                index < homeController.ratingV.value
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                color: Colors.amber,
-                                size: 36,
+      floatingActionButton: homeController.authBox.read("auth") ==
+              doctorsCollectionKey
+          ? SizedBox()
+          : GestureDetector(
+              onTap: () {
+                Get.defaultDialog(
+                    title: "add review",
+                    content: GetX<HomeScreenController>(
+                      builder: (_) {
+                        return Container(
+                          width: Get.width * .8,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              TextFormField(
+                                controller: commentController,
+                                decoration: InputDecoration(
+                                  hintText: 'Write your review here...',
+                                  border: OutlineInputBorder(),
+                                ),
+                                maxLines: 3,
                               ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                if (homeController.ratingV.value == 0) {
-                                  Get.snackbar(
-                                    "add star",
-                                    "please add stars",
-                                    snackPosition: SnackPosition.TOP,
-                                  );
-                                } else if (commentController.text.isNotEmpty &&
-                                    commentController.text.length > 3) {
-                                  homeController.addRatingForDoctor(
-                                      doctorInfo.uid!,
-                                      commentController.text.toString(),doctorInfo.phoneNumber);
-                                } else {
-                                  Get.snackbar(
-                                    "Error",
-                                    "please enter correct comment",
-                                    snackPosition: SnackPosition.TOP,
-                                  );
-                                }
-                              },
-                              child: !homeController.isAddingReview.value
-                                  ? Text('Add Review')
-                                  : Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      child: SizedBox(
-                                          height: 2,
-                                          width: 30,
-                                          child: LinearProgressIndicator()),
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  5,
+                                  (index) => IconButton(
+                                    onPressed: () {
+                                      homeController.updateRateValue(index + 1);
+                                    },
+                                    icon: Icon(
+                                      index < homeController.ratingV.value
+                                          ? Icons.star
+                                          : Icons.star_border,
+                                      color: Colors.amber,
+                                      size: 36,
                                     ),
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 12),
+                                  ),
+                                ),
                               ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text('Cancel'),
-                            ),
-                          ],
-                        ),
-                      ],
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (homeController.ratingV.value == 0) {
+                                        Get.snackbar(
+                                          "add star",
+                                          "please add stars",
+                                          snackPosition: SnackPosition.TOP,
+                                        );
+                                      } else if (commentController
+                                              .text.isNotEmpty &&
+                                          commentController.text.length > 3) {
+                                        homeController.addRatingForDoctor(
+                                            doctorInfo.uid!,
+                                            commentController.text.toString(),
+                                            doctorInfo.phoneNumber);
+                                      } else {
+                                        Get.snackbar(
+                                          "Error",
+                                          "please enter correct comment",
+                                          snackPosition: SnackPosition.TOP,
+                                        );
+                                      }
+                                    },
+                                    child: !homeController.isAddingReview.value
+                                        ? Text('Add Review')
+                                        : Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: SizedBox(
+                                                height: 2,
+                                                width: 30,
+                                                child:
+                                                    LinearProgressIndicator()),
+                                          ),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 12),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ));
+              },
+              child: Container(
+                height: Get.height * .06,
+                width: Get.width * .6,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 6,
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
-                  );
-                },
-              ));
-        },
-        child: Container(
-          height: Get.height * .06,
-          width: Get.width * .6,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 6,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-            color: mainColor2,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: false
-              ? Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Get.width * .1, vertical: Get.height * .028),
-                  child: const LinearProgressIndicator(
-                    color: white,
-                  ),
-                )
-              : Center(
-                  child: Text(
-                    "Add review".tr,
-                    style: TextStyle(
-                        fontSize: 22,
-                        color: white,
-                        fontWeight: FontWeight.w700),
-                  ),
+                  ],
+                  color: mainColor2,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-        ),
-      ),
+                child: false
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Get.width * .1,
+                            vertical: Get.height * .028),
+                        child: const LinearProgressIndicator(
+                          color: white,
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          "Add review".tr,
+                          style: TextStyle(
+                              fontSize: 22,
+                              color: white,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ),
+              ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
@@ -385,28 +439,34 @@ class DoctorsDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Doctor Information',
+              'Doctor Information'.tr,
               style: Theme.of(context).textTheme.headline2,
             ),
             SizedBox(height: 20),
-            _buildInfoItem('Name', doctorInfo.displayName ?? '',context),
-            _buildInfoItem('Phone Number', doctorInfo.phoneNumber ?? '',context),
-            _buildInfoItem('Bio', doctorInfo.bio ?? '',context),
-            _buildInfoItem('Specialty', doctorInfo.specialet ?? '',context),
-            _buildInfoItem('Clinic Address', doctorInfo.clinicAddress ?? '',context),
+            _buildInfoItem('Name'.tr, doctorInfo.displayName ?? '', context),
             _buildInfoItem(
-                'Available Work Days', doctorInfo.availableWorkDays ?? '',context),
-            _buildInfoItem('Work Start Hour', doctorInfo.workStartHour ?? '',context),
-            _buildInfoItem('Work End Hour', doctorInfo.workEndHour ?? '',context),
-            _buildInfoItem('Notes', doctorInfo.notes ?? '',context),
-            SizedBox(height: 30,)
+                'Reservation number'.tr, doctorInfo.clinicPhoneNum ?? '', context),
+            _buildInfoItem('Bio'.tr, doctorInfo.bio ?? '', context),
+            _buildInfoItem('Specialty'.tr, doctorInfo.specialet ?? '', context),
+            _buildInfoItem(
+                'Clinic Address'.tr, doctorInfo.clinicAddress ?? '', context),
+            _buildInfoItem('Available Work Days'.tr,
+                doctorInfo.availableWorkDays ?? '', context),
+            _buildInfoItem(
+                'Work Start Hour'.tr, doctorInfo.workStartHour ?? '', context),
+            _buildInfoItem(
+                'Work End Hour'.tr, doctorInfo.workEndHour ?? '', context),
+            _buildInfoItem('Notes'.tr, doctorInfo.notes ?? '', context),
+            SizedBox(
+              height: 30,
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoItem(String label, String value,context) {
+  Widget _buildInfoItem(String label, String value, context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

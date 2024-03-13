@@ -27,10 +27,11 @@ class AddSpecialization extends StatelessWidget {
                   itemCount: medicalSpecialtiesEn.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      title: Text(medicalSpecialtiesEn[index]['name']!),
+                      title:Get.locale?.languageCode == "ar"? Text(medicalSpecialtiesAr[index]['name']!): Text(medicalSpecialtiesEn[index]['name']!),
                       onTap: () {
                         Get.back(); //
                       addDoctorController.changeSpecialization(medicalSpecialtiesEn[index]['name']!);
+                      addDoctorController.changeSpecialization1(medicalSpecialtiesAr[index]['name']!);
                         addDoctorController.specialization =
                             medicalSpecialtiesEn[index]['name']!;
                       },
@@ -51,7 +52,7 @@ class AddSpecialization extends StatelessWidget {
               ),
             ),
             child: KTextUtils(
-              text: addDoctorController.specialization,
+              text: addDoctorController.specialization1,
               size: 16,
               color: white,
               fontWeight: FontWeight.w700,

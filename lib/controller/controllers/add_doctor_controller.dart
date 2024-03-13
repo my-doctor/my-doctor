@@ -15,6 +15,7 @@ class AddDoctorController extends GetxController {
   bool isLoading = false;
   RxList patientDiagnosis = [].obs;
   String specialization = "Choose Specialization".tr;
+  String specialization1 = "Choose Specialization".tr;
   RxString formattedAvailableDays = "".obs;
 
   DateTime currentDateTime = DateTime(DateTime.now().year, DateTime.now().month,
@@ -36,6 +37,12 @@ class AddDoctorController extends GetxController {
   //////////////////////////////change Specialization  //////////////////////////////
   changeSpecialization(s) {
     specialization = s;
+
+    update();
+  }
+  changeSpecialization1(s) {
+
+    specialization1 = s;
     update();
   }
 
@@ -109,6 +116,7 @@ class AddDoctorController extends GetxController {
     imageUrl,
     name,
     phoneNumber,
+      clinicPhoneNumber,
     isDoctorRequist,
     email,
     specialet,
@@ -137,6 +145,7 @@ class AddDoctorController extends GetxController {
             uid,
             email,
             phoneNumber,
+            clinicPhoneNumber    ,
             false,
             isDoctorRequist,
             "identityFile",

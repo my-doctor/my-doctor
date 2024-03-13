@@ -23,6 +23,7 @@ class FireStoreMethods {
       uid,
       email,
       phoneNumber,
+      phoneNumber,
       false,
       false,
       "identityFile",

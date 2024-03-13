@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mydoctor/view/widgets/utils_widgets/upload_file_doctor.dart';
@@ -37,7 +38,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     nameController.text = data.displayName!;
     emailController.text = data.email!;
-    phoneController.text = data.phoneNumber!;
+
     return Container(
       width: width,
       height: height,
@@ -170,27 +171,38 @@ class AddDoctorInfoScreen extends StatelessWidget {
                             color: white,
                           ),
                         ),
-                        // HeightSizeBox(SizeConfig.defaultSize!),
-                        // AuthTextFromField(
-                        //   controller: phoneController,
-                        //   obscureText: false,
-                        //   validator: (value) {
-                        //     if (value.length == 0) {
-                        //       return 'Please enter mobile number';
-                        //     } else if (!RegExp(validationPhone)
-                        //         .hasMatch(value)) {
-                        //       return 'Please enter valid mobile number';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   hintText: "Phone number",
-                        //   textInputType: TextInputType.phone,
-                        //   suffixIcon: Text(""),
-                        //   prefixIcon: Icon(
-                        //     Icons.phone_android,
-                        //     color: white,
-                        //   ),
-                        // ),
+                        HeightSizeBox(SizeConfig.defaultSize!),
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: AuthTextFromField(
+                            prefixIcon: CountryCodePicker(
+                              flagWidth: Get.width * .05,
+                              onChanged: (code) {
+                                cc.updateCountryCode(code.dialCode!);
+                              },
+                              initialSelection: 'IQ',
+                              // Set your initial country here
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            controller: phoneController,
+                            obscureText: false,
+                            validator: (value) {
+                              if (value.length == 0) {
+                                return 'Please enter mobile number';
+                              } else if (!RegExp(validationPhone)
+                                  .hasMatch(value)) {
+                                return 'Please enter valid mobile number';
+                              }
+                              return null;
+                            },
+                            hintText: "Reservation number".tr,
+                            textInputType: TextInputType.phone,
+                            suffixIcon: Text(""),
+                          ),
+                        ),
                         HeightSizeBox(SizeConfig.defaultSize!),
                         AuthTextFromField(
                           controller: emailController,
@@ -339,12 +351,16 @@ class AddDoctorInfoScreen extends StatelessWidget {
                                           controller.formattedAvailableDays
                                                   .value !=
                                               "") {
+                                        String phoneNumber =
+                                            cc.countryCode.value +
+                                                phoneController.text;
                                         controller
                                             .updateUserImageStorage(
                                                 data.uid!,
                                                 data.profileUrl!,
                                                 nameController.text,
-                                                phoneController.text,
+                                                data.phoneNumber,
+                                                phoneNumber,
                                                 true,
                                                 emailController.text,
                                                 controller.specialization,
@@ -359,9 +375,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
 
                                                 ///todo:add check on day not to be null
                                                 notesController.text)
-                                            .then((value) {
-
-                                        });
+                                            .then((value) {});
                                       } else {
                                         Get.snackbar(
                                           "Error",
