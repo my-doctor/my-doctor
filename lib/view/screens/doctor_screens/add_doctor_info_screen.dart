@@ -36,7 +36,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    nameController.text = data.displayName!;
+
     emailController.text = data.email!;
 
     return Container(
