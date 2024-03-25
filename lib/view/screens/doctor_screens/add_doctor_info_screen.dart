@@ -63,7 +63,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
           centerTitle: true,
         ),
         body: Container(
-          height: Get.height * .8,
+
           decoration: const BoxDecoration(),
           child: Padding(
             padding: EdgeInsets.all(8),
@@ -203,28 +203,28 @@ class AddDoctorInfoScreen extends StatelessWidget {
                             suffixIcon: Text(""),
                           ),
                         ),
-                        HeightSizeBox(SizeConfig.defaultSize!),
-                        AuthTextFromField(
-                          controller: emailController,
-                          obscureText: false,
-                          validator: (value) {
-                            if (value.length == 0) {
-                              return 'Please enter email'.tr;
-                            } else if (!RegExp(validationEmail)
-                                .hasMatch(value)) {
-                              return "Invalid Email".tr;
-                            } else {
-                              return null;
-                            }
-                          },
-                          hintText: 'Email'.tr,
-                          textInputType: TextInputType.emailAddress,
-                          prefixIcon: Icon(
-                            Icons.email_outlined,
-                            color: white,
-                          ),
-                          suffixIcon: Text(""),
-                        ),
+                        // HeightSizeBox(SizeConfig.defaultSize!),
+                        // AuthTextFromField(
+                        //   controller: emailController,
+                        //   obscureText: false,
+                        //   validator: (value) {
+                        //     if (value.length == 0) {
+                        //       return 'Please enter email'.tr;
+                        //     } else if (!RegExp(validationEmail)
+                        //         .hasMatch(value)) {
+                        //       return "Invalid Email".tr;
+                        //     } else {
+                        //       return null;
+                        //     }
+                        //   },
+                        //   hintText: 'Email'.tr,
+                        //   textInputType: TextInputType.emailAddress,
+                        //   prefixIcon: Icon(
+                        //     Icons.email_outlined,
+                        //     color: white,
+                        //   ),
+                        //   suffixIcon: Text(""),
+                        // ),
                         HeightSizeBox(SizeConfig.defaultSize!),
                         AuthTextFromField(
                           controller: locationAddress,
@@ -397,8 +397,8 @@ class AddDoctorInfoScreen extends StatelessWidget {
                               },
                             );
                           },
-                        )
-                      ],
+                        ),
+SizedBox(height: 40,)                      ],
                     ),
                   ),
                 );
