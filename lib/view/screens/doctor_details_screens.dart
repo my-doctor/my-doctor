@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controller/controllers/home_controller.dart';
-import '../../model/patint_info_model.dart';
+import '../../model/user_model.dart';
 import '../../utils/constants.dart';
 import '../../utils/my_string.dart';
 import '../../utils/size_config.dart';
@@ -281,7 +281,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
           : GestureDetector(
               onTap: () {
                 Get.defaultDialog(
-                    title: "add review",
+                    title: "Add Review".tr,
                     content: GetX<HomeScreenController>(
                       builder: (_) {
                         return Container(
@@ -292,7 +292,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                               TextFormField(
                                 controller: commentController,
                                 decoration: InputDecoration(
-                                  hintText: 'Write your review here...',
+                                  hintText: 'Write your review here...'.tr,
                                   border: OutlineInputBorder(),
                                 ),
                                 maxLines: 3,
@@ -334,6 +334,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                           commentController.text.length > 3) {
                                         homeController.addRatingForDoctor(
                                             doctorInfo.uid!,
+                                            homeController.calculateAverageRating(homeController.doctorRatings ),
                                             commentController.text.toString(),
                                             doctorInfo.phoneNumber);
                                       } else {
@@ -345,7 +346,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                       }
                                     },
                                     child: !homeController.isAddingReview.value
-                                        ? Text('Add Review')
+                                        ? Text('Add Review'.tr)
                                         : Padding(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 10),
@@ -364,7 +365,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                     onPressed: () {
                                       Get.back();
                                     },
-                                    child: Text('Cancel'),
+                                    child: Text('Cancel'.tr),
                                   ),
                                 ],
                               ),

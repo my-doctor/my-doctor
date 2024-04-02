@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mydoctor/routes/routes.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:mydoctor/view/screens/admin_screens/manage_doctor_accounts_screen.dart';
 import '../../../utils/my_string.dart';
 import '../../controller/controllers/auth_controller.dart';
 import '../../controller/controllers/settings_controller.dart';
@@ -43,7 +44,7 @@ class SettingScreen extends StatelessWidget {
                               width: SizeConfig.defaultSize! * 5,
                             ),
                             HeightSizeBox(SizeConfig.defaultSize! * .7),
-                           !controller.isDoctor() || controller.isAdmin()
+                            !controller.isDoctor() || controller.isAdmin()
                                 ? KTextUtils(
                                     text: controller
                                         .patientInfoModel.value!.displayName!,
@@ -186,7 +187,18 @@ class SettingScreen extends StatelessWidget {
                                   TextStyle(fontSize: 20, color: Colors.black),
                               context: context)
                           : SizedBox(),
-                  controller.isAdmin() ? SizedBox(height: 20) : SizedBox(),
+                  controller.isAdmin()
+                      ? buildTextButtonIcon(
+                          backColor: mainColor,
+                          onPressed: () {Get.to(()=>ManageDoctorAcoontsScreen());},
+                          label: "manage doctors account ".tr,
+                          iconColor: Colors.white,
+                          icon: Icons.edit_note,
+                          context: context)
+                      : SizedBox(),
+                  controller.isAdmin()
+                      ? SizedBox(height: 20)
+                      : SizedBox(height: 20),
                   controller.isAdmin()
                       ? Container(
                           alignment: Alignment.topLeft,

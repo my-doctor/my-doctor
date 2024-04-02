@@ -5,7 +5,7 @@ import 'package:mydoctor/view/widgets/utils_widgets/upload_file_doctor.dart';
 
 import '../../../controller/controllers/add_doctor_controller.dart';
 import '../../../controller/controllers/auth_controller.dart';
-import '../../../model/patint_info_model.dart';
+import '../../../model/user_model.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/my_string.dart';
 import '../../../utils/size_config.dart';
@@ -63,7 +63,6 @@ class AddDoctorInfoScreen extends StatelessWidget {
           centerTitle: true,
         ),
         body: Container(
-
           decoration: const BoxDecoration(),
           child: Padding(
             padding: EdgeInsets.all(8),
@@ -272,7 +271,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             KTextUtils(
-                                text: "from :",
+                                text: "from :".tr,
                                 size: Get.width * .04,
                                 color: white,
                                 fontWeight: FontWeight.bold,
@@ -308,7 +307,7 @@ class AddDoctorInfoScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             KTextUtils(
-                                text: "to :",
+                                text: "to :".tr,
                                 size: Get.width * .04,
                                 color: white,
                                 fontWeight: FontWeight.bold,
@@ -398,7 +397,10 @@ class AddDoctorInfoScreen extends StatelessWidget {
                             );
                           },
                         ),
-SizedBox(height: 40,)                      ],
+                        SizedBox(
+                          height: 40,
+                        )
+                      ],
                     ),
                   ),
                 );

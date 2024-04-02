@@ -109,7 +109,7 @@ class SearchScreen extends StatelessWidget {
                                         uid: homeController
                                             .searchList[index].uid!,
                                         doctorInfo:
-                                            homeController.searchList[index]);
+                                            homeController.searchList[index], averageRatingValue: 8,);
                                   },
                                 )
                               : Center(

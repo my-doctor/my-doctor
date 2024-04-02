@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../model/patint_info_model.dart';
+import '../../../model/user_model.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/size_config.dart';
 import '../../screens/doctor_details_screens.dart';
@@ -14,6 +14,7 @@ class DoctorCard extends StatelessWidget {
   String imageUrl;
   String uid;
   UserModel doctorInfo;
+  int averageRatingValue;
 
   DoctorCard({
     required this.name,
@@ -21,6 +22,7 @@ class DoctorCard extends StatelessWidget {
     required this.imageUrl,
     required this.uid,
     required this.doctorInfo,
+    required this.averageRatingValue,
   });
 
   @override
@@ -93,19 +95,9 @@ class DoctorCard extends StatelessWidget {
                 SizedBox(
                   height: SizeConfig.defaultSize! * .5,
                 ),
-                SizedBox(
+             averageRatingValue>5?SizedBox():   SizedBox(
                   width: SizeConfig.defaultSize! * 8,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      buildIcon(),
-                      buildIcon(),
-                      buildIcon(),
-                      buildIcon(),
-                      buildIcon(),
-                    ],
-                  ),
+                  child: buildRatingStars(averageRatingValue),
                 ),
                 SizedBox(
                   height: 5,
@@ -149,11 +141,18 @@ class DoctorCard extends StatelessWidget {
     );
   }
 
-  Icon buildIcon() {
-    return Icon(
-      Icons.star,
-      color: Colors.orangeAccent,
-      size: 15,
+  Widget buildRatingStars(int averageRatingValue) {
+    return Row(
+      children: List.generate(
+        5,
+            (index) => Icon(
+          index < averageRatingValue
+              ? Icons.star
+              : Icons.star_border,
+          color: Colors.amber,
+          size: 20,
+        ),
+      ),
     );
   }
 }

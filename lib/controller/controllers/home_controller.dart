@@ -7,7 +7,7 @@ import 'package:mydoctor/model/rating_model.dart';
 import 'package:mydoctor/view/screens/medical_specialties.dart';
 import 'package:mydoctor/view/screens/search_screen.dart';
 
-import '../../model/patint_info_model.dart';
+import '../../model/user_model.dart';
 import '../../services/firestore_methods.dart';
 import '../../utils/constants.dart';
 import '../../utils/my_string.dart';
@@ -93,7 +93,7 @@ class HomeScreenController extends GetxController {
     //print(s);
     await FireStoreMethods()
         .doctors
-        .where('specialet', isEqualTo: s)
+        .where('specialet', isEqualTo: s).orderBy('averageRatingValue',descending: true)
         .snapshots()
         .listen((event) {
       doctorsListBySpecialet.clear();
@@ -102,6 +102,7 @@ class HomeScreenController extends GetxController {
         doctorsListBySpecialet.add(UserModel.fromMap(event.docs[i]));
       }
     });
+
     //   update();
   }
 
@@ -111,9 +112,7 @@ class HomeScreenController extends GetxController {
   RxBool isSearching = false.obs;
   TextEditingController search = TextEditingController();
 
-  void addSearchToList(
-    String searchName,
-  ) {
+  void addSearchToList(String searchName,) {
     if (search.text.isEmpty) {
       isSearching.value = false;
       searchList.clear();
@@ -141,6 +140,7 @@ class HomeScreenController extends GetxController {
   ///                   doctor reviews functionality
   RxList doctorReviewsList = [].obs;
   RxBool isGetDoctorReviews = false.obs;
+  RxBool isGetDoctorRatings = false.obs;
 
   void getDoctorReviews(String doctorPhoneNumber) {
     isGetDoctorReviews.value = true;
@@ -152,12 +152,17 @@ class HomeScreenController extends GetxController {
         .snapshots()
         .listen((snapshot) {
       doctorReviewsList.clear();
+      doctorRatings.clear();
       for (int i = 0; i < snapshot.docs.length; i++) {
         doctorReviewsList.add(RatingModel.fromMap(snapshot.docs[i]));
+        doctorRatings.add(RatingModel
+            .fromMap(snapshot.docs[i])
+            .ratingValue!);
       }
       isGetDoctorReviews.value = false;
     });
   }
+
 
   RxBool isAddingReview = false.obs;
   RxInt ratingV = 0.obs;
@@ -167,7 +172,7 @@ class HomeScreenController extends GetxController {
     update();
   }
 
-  addRatingForDoctor(String doctorId, comment, phoneNumber) async {
+  addRatingForDoctor(String doctorId,num averageRatingValue, comment, phoneNumber) async {
     print(doctorId);
     print(comment);
     isAddingReview.value = true;
@@ -178,13 +183,15 @@ class HomeScreenController extends GetxController {
       try {
         await FireStoreMethods()
             .addReview(
-                userId: myUid,
-                doctorId: doctorId,
-                userName: patientInfoModel.value!.displayName!,
-                ratingValue: ratingV.value,
-                comment: comment,
-                phoneNumber: phoneNumber)
-            .then((value) {
+            userId: myUid,
+            doctorId: doctorId,
+            userName: patientInfoModel.value!.displayName!,
+            ratingValue: ratingV.value,
+            comment: comment,
+            phoneNumber: phoneNumber)
+            .then((value) async {
+          FireStoreMethods().updateDoctorAverageRatingValue(
+              doctorId: phoneNumber, averageRatingValue: averageRatingValue);
           ratingV.value = 0;
           Get.back();
           Get.snackbar(
@@ -209,5 +216,18 @@ class HomeScreenController extends GetxController {
       }
     }
     update();
+  }
+
+
+  List<int> doctorRatings = [];
+
+  int calculateAverageRating(List<int> ratingsList) {
+    if (ratingsList.isEmpty) {
+      return 0; // Return 0 if the list is empty to avoid division by zero
+    }
+
+    int totalSum = ratingsList.reduce((value, element) => value + element);
+    int averageRating = totalSum ~/ ratingsList.length;
+    return averageRating;
   }
 }

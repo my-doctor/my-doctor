@@ -60,7 +60,8 @@ class DoctorsBySpecialtiesScreen extends StatelessWidget {
                                 uid: controller
                                     .doctorsListBySpecialet[index].uid,
                                 doctorInfo:
-                                    controller.doctorsListBySpecialet[index],
+                                    controller.doctorsListBySpecialet[index], averageRatingValue:controller
+                                  .doctorsListBySpecialet[index].averageRatingValue,
                               );
                             })
                         : SizedBox(

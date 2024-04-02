@@ -345,19 +345,19 @@ class AuthController extends GetxController {
           .where("phoneNumber", isEqualTo: phoneNumber) // varuId in your case
           .get();
       authBox.write(KUid, phoneNumber);
-      if (p.docs.isNotEmpty) {
-        Get.offNamed(Routes.homeScreen);
-        authBox.write("auth", patientsCollectionKey);
-        isLoading.value = false;
-      } else if (d.docs.isNotEmpty) {
-        Get.offNamed(Routes.homeScreen);
-        authBox.write("auth", doctorsCollectionKey);
-        isLoading.value = false;
-      } else if (a.docs.isNotEmpty) {
+      if (a.docs.isNotEmpty) {
         Get.offNamed(Routes.homeScreen);
         authBox.write("auth", adminCollectionKey); //
         isLoading.value = false;
-      } else {
+      }  else if (d.docs.isNotEmpty) {
+        Get.offNamed(Routes.homeScreen);
+        authBox.write("auth", doctorsCollectionKey);
+        isLoading.value = false;
+      } else if(p.docs.isNotEmpty) {
+        Get.offNamed(Routes.homeScreen);
+        authBox.write("auth", patientsCollectionKey);
+        isLoading.value = false;
+      }  else {
         isLoading.value = false;
         Get.snackbar(
             "Error", "try to login again with correct password and number",

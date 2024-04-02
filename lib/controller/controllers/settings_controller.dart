@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../../model/patint_info_model.dart';
+import '../../model/user_model.dart';
 import '../../services/firestore_methods.dart';
 import '../../utils/constants.dart';
 import '../../utils/my_string.dart';
@@ -22,8 +22,12 @@ class SettingController extends GetxController {
   void onInit() async {
     super.onInit();
     getUserData();
+    getDoctorsInfoByS();
     getDoctorsRequistList();
+    String c = authBox.read("auth") ?? "nothinbg";
+    print("????????????????????????" + c);
     langLocal = await getLanguage;
+    isAdmin();
   }
 
   bool isDoctor() {
@@ -56,9 +60,6 @@ class SettingController extends GetxController {
       "isDoctor": true,
       "isDoctorRequist": false,
     }).then((value) async {
-
-
-
       Get.snackbar(
         "Updated ✔✔",
         "Doctor Confirmed Successfully",
@@ -142,5 +143,34 @@ class SettingController extends GetxController {
       saveLanguage(ene);
     }
     update();
+  }
+
+  RxList doctorsListBySpecialet = [].obs;
+
+  getDoctorsInfoByS() async {
+    //print(s);
+    await FireStoreMethods().doctors.snapshots().listen((event) {
+      doctorsListBySpecialet.clear();
+      for (int i = 0; i < event.docs.length; i++) {
+        print(event.docs[i]);
+        doctorsListBySpecialet.add(UserModel.fromMap(event.docs[i]));
+      }
+    });
+
+    //   update();
+  }
+
+  RxBool isdeleteLoading = false.obs;
+
+  deleteDoctorAccount(String doctorID) async {
+    isdeleteLoading.value = true;
+    await FireStoreMethods().doctors.doc(doctorID).delete().then((value) {
+      Get.snackbar("done", "account deleted successfully");
+      isdeleteLoading.value = false;
+    }).catchError((onError) {
+      Get.snackbar("error", "${onError}");
+      isdeleteLoading.value=false;
+
+    });
   }
 }

@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:mydoctor/routes/routes.dart';
 import 'package:mydoctor/utils/my_string.dart';
 
-import '../../model/patint_info_model.dart';
+import '../../model/user_model.dart';
 
 class AddDoctorController extends GetxController {
   bool isLoading = false;
@@ -158,7 +158,7 @@ class AddDoctorController extends GetxController {
             availableWorkDays,
             from,
             to,
-            notes,
+            notes,0
           );
           await updateUserInfo(
             user.toJson(),

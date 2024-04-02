@@ -19,6 +19,7 @@ class UserModel {
   String? workStartHour;
   String? workEndHour;
   String? notes;
+  num?averageRatingValue;
 
   UserModel(
 
@@ -40,6 +41,7 @@ class UserModel {
     this.workStartHour,
     this.workEndHour,
     this.notes,
+    this.averageRatingValue,
   );
 
   factory UserModel.fromMap(map) {
@@ -62,6 +64,7 @@ class UserModel {
       map['workStartHour'],
       map['workEndHour'],
       map['notes'],
+      map['averageRatingValue'],
     );
   }
 
@@ -85,6 +88,7 @@ class UserModel {
       'workStartHour': workStartHour,
       'workEndHour': workEndHour,
       'notes': notes,
+      'averageRatingValue': averageRatingValue,
     };
   }
 }
