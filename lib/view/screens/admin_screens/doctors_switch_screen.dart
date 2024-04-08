@@ -21,19 +21,25 @@ class DoctorSwitchRequistListScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Obx(() {
-        return controller.doctorsRequistList.length==0?Center(child: Text("theres no doctor requist"),):ListView.builder(
-          itemCount: controller.doctorsRequistList.length,
-          itemBuilder: (BuildContext context, int index) {
-            UserModel doctor = controller.doctorsRequistList.value[index];
-            return DoctorRequestTile(
-              doctor: doctor,
-              function: () {
-                controller.confirmDoctorRequest(
-                    controller.doctorsRequistList.value[index].phoneNumber);
-              }, isL: controller.isLoading,
-            );
-          },
-        );
+        return controller.doctorsRequistList.length == 0
+            ? Center(
+                child: Text("theres no doctor requist"),
+              )
+            : ListView.builder(
+                itemCount: controller.doctorsRequistList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  UserModel doctor = controller.doctorsRequistList.value[index];
+                  return DoctorRequestTile(
+                    doctor: doctor,
+                    function: () {
+                      controller.confirmDoctorRequest(controller
+                          .doctorsRequistList.value[index].phoneNumber);
+                    },
+                    isL: controller.isLoading, function2: () {       controller.deleteDoctorAccount(
+                      controller.doctorsListBySpecialet.value[index].phoneNumber);}, isL2: controller.isdeleteLoading,
+                  );
+                },
+              );
       }),
     );
   }
@@ -42,13 +48,17 @@ class DoctorSwitchRequistListScreen extends StatelessWidget {
 class DoctorRequestTile extends StatelessWidget {
   final UserModel doctor;
   final Function() function;
+  final Function() function2;
   RxBool isL;
+  RxBool isL2;
 
   DoctorRequestTile({
     Key? key,
     required this.doctor,
     required this.function,
+    required this.function2,
     required this.isL,
+    required this.isL2,
   }) : super(key: key);
 
   @override
@@ -85,9 +95,24 @@ class DoctorRequestTile extends StatelessWidget {
             ListTile(
               title: Text("Work End Hour: ${doctor.workEndHour ?? ""}"),
             ),
-            ElevatedButton(
-              onPressed: function,
-              child:isL.value?CircularProgressIndicator(): Text("Confirm"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: function,
+                  child:
+                      isL.value ? CircularProgressIndicator() : Text("Confirm"),
+                ),
+                ElevatedButton(
+                  onPressed: function2,
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.redAccent),
+                  ),
+                  child:
+                      isL2.value ? CircularProgressIndicator() : Text("cancel"),
+                ),
+              ],
             ),
           ],
         );

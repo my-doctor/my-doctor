@@ -172,5 +172,5 @@ class SettingController extends GetxController {
       isdeleteLoading.value=false;
 
     });
-  }
+  update();}
 }
