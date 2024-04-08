@@ -278,7 +278,7 @@ class PatientRegisterScreen extends StatelessWidget {
                           return AuthButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
-                                  String name = "User name";
+                                  String name = "User";
 
                                   String email = "email@e.com";
                                   String password = passwordController.text;
