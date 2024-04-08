@@ -35,8 +35,12 @@ class DoctorSwitchRequistListScreen extends StatelessWidget {
                       controller.confirmDoctorRequest(controller
                           .doctorsRequistList.value[index].phoneNumber);
                     },
-                    isL: controller.isLoading, function2: () {       controller.deleteDoctorAccount(
-                      controller.doctorsListBySpecialet.value[index].phoneNumber);}, isL2: controller.isdeleteLoading,
+                    isL: controller.isLoading,
+                    function2: () {
+                      controller.deleteDoctorAccount(controller
+                          .doctorsRequistList.value[index].phoneNumber);
+                    },
+                    isL2: controller.isdeleteLoading,
                   );
                 },
               );
