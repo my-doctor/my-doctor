@@ -73,7 +73,7 @@ class DoctorCard extends StatelessWidget {
                 SizedBox(
                   width: SizeConfig.defaultSize! * 8,
                   child:Text(
-                      "Dr. " + name,style: Theme.of(context).textTheme.headline2,
+                       " " + name,style: Theme.of(context).textTheme.headline2,
                   ),
                 ),
                 SizedBox(

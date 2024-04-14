@@ -416,15 +416,15 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
 
   BoxDecoration buildBoxDecoration(@required context) {
     return BoxDecoration(
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black12.withOpacity(0.5),
-          spreadRadius: 2,
-          blurRadius: 6,
-          offset: Offset(0, 3), // changes position of shadow
-        ),
-      ],
-      color: Theme.of(context).canvasColor,
+      // boxShadow: [
+      //   BoxShadow(
+      //     color: Colors.black12.withOpacity(0.5),
+      //     spreadRadius: 2,
+      //     blurRadius: 6,
+      //     offset: Offset(0, 3), // changes position of shadow
+      //   ),
+      // ],
+      // color: Theme.of(context).canvasColor,
       borderRadius: BorderRadius.only(
         bottomLeft: Radius.circular(20),
         bottomRight: Radius.circular(20),
@@ -452,7 +452,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
             _buildInfoItem(
                 'Clinic Address'.tr, doctorInfo.clinicAddress ?? '', context),
             _buildInfoItem('Available Work Days'.tr,
-                doctorInfo.availableWorkDays ?? '', context),
+                orderDaysOfWeek(doctorInfo.availableWorkDays!) ?? '', context),
             _buildInfoItem(
                 'Work Start Hour'.tr, doctorInfo.workStartHour ?? '', context),
             _buildInfoItem(
@@ -466,7 +466,28 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
       ),
     );
   }
+  String orderDaysOfWeek(String daysString) {
+    List<String> daysList = daysString.split(', '); // Split by comma and space
 
+    // Define the order of days in a week
+    List<String> weekDaysOrder = [
+      'السبت',
+      'الأحد',
+      'الاثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة'
+    ];
+
+    // Sort the days based on their order in a week
+    daysList.sort((a, b) => weekDaysOrder.indexOf(a).compareTo(weekDaysOrder.indexOf(b)));
+
+    // Join the sorted days back into a string
+    String sortedDaysString = daysList.join(', ');
+
+    return sortedDaysString;
+  }
   Widget _buildInfoItem(String label, String value, context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
