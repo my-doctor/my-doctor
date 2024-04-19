@@ -74,6 +74,18 @@ class HomeScreenController extends GetxController {
       //  update();
     });
   }
+  bool hasUserCommented() {
+    // Assuming you have access to the user's comment history
+    // Check if the user has already commented
+    bool userHasCommented = false; // Assume initially that the user hasn't commented
+    for (var comment in  doctorReviewsList) {
+      if (comment.userId ==  patientInfoModel.value!.phoneNumber!) {
+        userHasCommented = true; // Set to true if the user has commented
+        break; // Exit the loop since we found a comment by the user
+      }
+    }
+    return userHasCommented;
+  }
 
   getDoctorsInfo() async {
     await FireStoreMethods()
@@ -93,7 +105,8 @@ class HomeScreenController extends GetxController {
     //print(s);
     await FireStoreMethods()
         .doctors
-        .where('specialet', isEqualTo: s).orderBy('averageRatingValue',descending: true)
+        .where('specialet', isEqualTo: s)
+        .orderBy('averageRatingValue', descending: true)
         .snapshots()
         .listen((event) {
       doctorsListBySpecialet.clear();
@@ -112,7 +125,9 @@ class HomeScreenController extends GetxController {
   RxBool isSearching = false.obs;
   TextEditingController search = TextEditingController();
 
-  void addSearchToList(String searchName,) {
+  void addSearchToList(
+    String searchName,
+  ) {
     if (search.text.isEmpty) {
       isSearching.value = false;
       searchList.clear();
@@ -155,14 +170,11 @@ class HomeScreenController extends GetxController {
       doctorRatings.clear();
       for (int i = 0; i < snapshot.docs.length; i++) {
         doctorReviewsList.add(RatingModel.fromMap(snapshot.docs[i]));
-        doctorRatings.add(RatingModel
-            .fromMap(snapshot.docs[i])
-            .ratingValue!);
+        doctorRatings.add(RatingModel.fromMap(snapshot.docs[i]).ratingValue!);
       }
       isGetDoctorReviews.value = false;
     });
   }
-
 
   RxBool isAddingReview = false.obs;
   RxInt ratingV = 0.obs;
@@ -172,7 +184,8 @@ class HomeScreenController extends GetxController {
     update();
   }
 
-  addRatingForDoctor(String doctorId,num averageRatingValue, comment, phoneNumber) async {
+  addRatingForDoctor(
+      String doctorId, num averageRatingValue, comment, phoneNumber) async {
     print(doctorId);
     print(comment);
     isAddingReview.value = true;
@@ -183,12 +196,14 @@ class HomeScreenController extends GetxController {
       try {
         await FireStoreMethods()
             .addReview(
-            userId: myUid,
-            doctorId: doctorId,
-            userName: patientInfoModel.value!.displayName!,
-            ratingValue: ratingV.value,
-            comment: comment,
-            phoneNumber: phoneNumber)
+                userId: myUid,
+                doctorId: doctorId,
+                userName: patientInfoModel.value!.displayName == "User name"
+                    ? "User"
+                    : patientInfoModel.value!.displayName!,
+                ratingValue: ratingV.value,
+                comment: comment,
+                phoneNumber: phoneNumber)
             .then((value) async {
           FireStoreMethods().updateDoctorAverageRatingValue(
               doctorId: phoneNumber, averageRatingValue: averageRatingValue);
@@ -217,7 +232,6 @@ class HomeScreenController extends GetxController {
     }
     update();
   }
-
 
   List<int> doctorRatings = [];
 

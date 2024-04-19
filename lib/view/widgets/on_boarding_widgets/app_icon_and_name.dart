@@ -15,7 +15,7 @@ class AppIconAndName extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(39)),
             child: Image.asset(
-              "assets/images/appicon.png",
+              "assets/images/appicon.jpeg",
               colorBlendMode: BlendMode.hue,
               filterQuality: FilterQuality.high,
             ),
@@ -35,12 +35,7 @@ class AppIconAndName extends StatelessWidget {
                 color: color,
                 fontFamily: "Cairo",
               ),
-            ),
-            Text(
-              "Keep Talking..",
-              style: TextStyle(
-                  fontSize: 14, color: color, fontStyle: FontStyle.italic),
-            ),
+    )
           ],
         )
       ],

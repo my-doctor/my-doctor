@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -128,7 +129,6 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                             ),
                           ),
                           HeightSizeBox(Get.height * .004),
-
                           GetX<HomeScreenController>(
                             builder: (_) {
                               return ReviewsAndSissions(
@@ -137,17 +137,13 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                         0,
                                 f1: () {
                                   setState(() {
-
-                                      scrollController.animateTo(0);
-
+                                    scrollController.animateTo(0);
                                   });
                                 },
                                 f2: () {
                                   print("f1 is done");
                                   setState(() {
-
-                                      scrollController.animateTo(1);
-
+                                    scrollController.animateTo(1);
                                   });
                                 },
                               );
@@ -323,28 +319,36 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (homeController.ratingV.value == 0) {
-                                        Get.snackbar(
-                                          "add star",
-                                          "please add stars",
-                                          snackPosition: SnackPosition.TOP,
-                                        );
-                                      } else if (commentController
-                                              .text.isNotEmpty &&
-                                          commentController.text.length > 3) {
-                                        homeController.addRatingForDoctor(
+                                      if (!homeController.hasUserCommented()) { // Assuming this function checks if the user has already commented
+                                        if (homeController.ratingV.value == 0) {
+                                          Get.snackbar(
+                                            "Add Stars",
+                                            "Please add stars.",
+                                            snackPosition: SnackPosition.TOP,
+                                          );
+                                        } else if (commentController.text.isNotEmpty && commentController.text.length > 3) {
+                                          homeController.addRatingForDoctor(
                                             doctorInfo.uid!,
-                                            homeController.calculateAverageRating(homeController.doctorRatings ),
+                                            homeController.calculateAverageRating(homeController.doctorRatings),
                                             commentController.text.toString(),
-                                            doctorInfo.phoneNumber);
+                                            doctorInfo.phoneNumber,
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            "Error",
+                                            "Please enter a correct comment.",
+                                            snackPosition: SnackPosition.TOP,
+                                          );
+                                        }
                                       } else {
                                         Get.snackbar(
                                           "Error",
-                                          "please enter correct comment",
+                                          "You can only comment once.",
                                           snackPosition: SnackPosition.TOP,
                                         );
                                       }
                                     },
+
                                     child: !homeController.isAddingReview.value
                                         ? Text('Add Review'.tr)
                                         : Padding(
@@ -445,8 +449,8 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
             ),
             SizedBox(height: 20),
             _buildInfoItem('Name'.tr, doctorInfo.displayName ?? '', context),
-            _buildInfoItem(
-                'Reservation number'.tr, doctorInfo.clinicPhoneNum ?? '', context),
+            _buildInfoItem('Reservation number'.tr,
+                doctorInfo.clinicPhoneNum ?? '', context),
             _buildInfoItem('Bio'.tr, doctorInfo.bio ?? '', context),
             _buildInfoItem('Specialty'.tr, doctorInfo.specialet ?? '', context),
             _buildInfoItem(
@@ -466,6 +470,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
       ),
     );
   }
+
   String orderDaysOfWeek(String daysString) {
     List<String> daysList = daysString.split(', '); // Split by comma and space
 
@@ -481,13 +486,15 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
     ];
 
     // Sort the days based on their order in a week
-    daysList.sort((a, b) => weekDaysOrder.indexOf(a).compareTo(weekDaysOrder.indexOf(b)));
+    daysList.sort(
+        (a, b) => weekDaysOrder.indexOf(a).compareTo(weekDaysOrder.indexOf(b)));
 
     // Join the sorted days back into a string
     String sortedDaysString = daysList.join(', ');
 
     return sortedDaysString;
   }
+
   Widget _buildInfoItem(String label, String value, context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
