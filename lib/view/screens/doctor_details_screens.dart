@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -116,7 +115,7 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                           ),
                           HeightSizeBox(Get.width * .01),
                           Text(
-                            "Dr." + name,
+                         name,
                             style: Theme.of(context).textTheme.headline2,
                           ),
                           HeightSizeBox(Get.width * .01),
@@ -319,17 +318,23 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (!homeController.hasUserCommented()) { // Assuming this function checks if the user has already commented
+                                      if (!homeController.hasUserCommented()) {
+                                        // Assuming this function checks if the user has already commented
                                         if (homeController.ratingV.value == 0) {
                                           Get.snackbar(
                                             "Add Stars",
                                             "Please add stars.",
                                             snackPosition: SnackPosition.TOP,
                                           );
-                                        } else if (commentController.text.isNotEmpty && commentController.text.length > 3) {
+                                        } else if (commentController
+                                                .text.isNotEmpty &&
+                                            commentController.text.length > 3) {
                                           homeController.addRatingForDoctor(
                                             doctorInfo.uid!,
-                                            homeController.calculateAverageRating(homeController.doctorRatings),
+                                            homeController
+                                                .calculateAverageRating(
+                                                    homeController
+                                                        .doctorRatings),
                                             commentController.text.toString(),
                                             doctorInfo.phoneNumber,
                                           );
@@ -348,7 +353,6 @@ class _DoctorsDetailsScreenState extends State<DoctorsDetailsScreen>
                                         );
                                       }
                                     },
-
                                     child: !homeController.isAddingReview.value
                                         ? Text('Add Review'.tr)
                                         : Padding(
